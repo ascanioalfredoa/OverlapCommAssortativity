@@ -1,0 +1,29 @@
+---
+title: "Consistency tests"
+author: "LMM"
+date: "17 de julio de 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(asnipe)
+data('identified_individuals')
+```
+
+The following are the data used in Shizuka et al. (2016)
+
+```{r original datasets}
+sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'))
+
+tit <- identified_individuals[identified_individuals$Date == 1,]
+
+thornbill <- read.csv('data/mmc1.csv')
+```
+
