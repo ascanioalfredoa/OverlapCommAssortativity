@@ -34,14 +34,13 @@ sparrow <- cmbDFrame(sparrow[,-c(1:3)])
 sparrow <- as.data.frame(sparrow$mrgCCombs[sparrow$mrgCCombs[,2] != '',])
 ```
 
-```{r}
+```{r sparrow data}
 sparrow_el <- sparrow %>% 
     select(-c(1:3)) %>%
     cmbDFrame()
 
 sparrow_g <- sparrow_el$mrgCCombs %>% 
-    data.frame() %>% 
-    filter(X2 != '') %>% 
-    graph.data.frame(directed = FALSE)
+    data.frame() %>%
+    mutate(X1 = as.character(X1), X2 = as.character(X2)) 
 ```
 
