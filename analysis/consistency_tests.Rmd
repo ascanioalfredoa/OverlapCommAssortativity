@@ -41,6 +41,16 @@ sparrow_el <- sparrow %>%
 
 sparrow_g <- sparrow_el$mrgCCombs %>% 
     data.frame() %>%
-    mutate(X1 = as.character(X1), X2 = as.character(X2)) 
+    mutate(X1 = as.character(X1), X2 = as.character(X2))
 ```
 
+```{r}
+#7668 and 7673
+sum(sparrow_g[,1] == 7668 & sparrow_g[,2] == 7673, 
+    sparrow_g[,2] == 7668 & sparrow_g[,1] == 7673)
+
+sum(sparrow_g[,1] == 7668, 
+    sparrow_g[,2] == 7668, 
+    sparrow_g[,1] == 7673,
+    sparrow_g[,2] == 7673)
+```
