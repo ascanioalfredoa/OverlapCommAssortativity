@@ -11,12 +11,17 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r libraries}
 library(tidyverse)
 library(asnipe)
 library(igraph)
 library(linkcomm)
 source('R/cmbDFrame.r')
+source('R/rcomm_exx.r')
+source('R/new_exy_calculation.r')
+source('R/Permutational_community_assortativity.r')
+source('R/adj_to_edgelist.r')
+source('R/xy_subsets.r')
 data('identified_individuals')
 ```
 
@@ -30,6 +35,7 @@ tit <- identified_individuals[identified_individuals$Date == 1,]
 thornbill <- read.csv('data/mmc1.csv')
 ```
 
+#1. Sparrow data
 
 ```{r sparrow data}
 sparrow_el <- sparrow %>% 
@@ -41,7 +47,7 @@ sparrow_wel <- sparrow_el$mrgCCombs %>%
     mutate(X1 = as.character(X1), X2 = as.character(X2))
 ```
 
-```{r Simple ratio association index}
+```{r sparrow simple ratio association index}
 sparrow_wel$weight <- 0
 
 for(i in 1:nrow(unique(sparrow_wel))) {
@@ -62,10 +68,11 @@ for(i in 1:nrow(unique(sparrow_wel))) {
 
 print(paste(round(100*i/nrow(unique(sparrow_wel)), 1), "%"))
 }
+
+sparrow_wel <- sparrow_wel[sparrow_wel$X2 != '',] #Discard solitary individuals
 ```
 
-```{r sparrow graph}
-sparrow_wel <- sparrow_wel[sparrow_wel$X2 != '',] #Discard solitary individuals
+```{r sparrow graphs}
 sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE) 
 
 sparrow_g <- simplify(sparrow_g)#Discard multiple edges
@@ -74,4 +81,18 @@ sparrow_dis <- cluster_fast_greedy(sparrow_g) #discrete communities
 #plot(sparrow_comm, sparrow_g)
 
 sparrow_over <- getLinkCommunities(sparrow_wel) #overlapping communities
+#plotLinkCommGraph(sparrow_over)
 ```
+
+Now we can compare the consistency of the proposed metric
+
+```{r sparrow rcomx}
+Pij_comm <- calc_Pmatrix(sparrow_g, 100)
+
+Exx <- rcomm_exx(Pij_comm)
+Exy <- rcom_exy()
+
+rcom_spa <- (Exx - Exy)/(1 - Exy)
+print(rcom_spa)
+```
+
