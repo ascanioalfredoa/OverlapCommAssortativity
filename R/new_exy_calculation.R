@@ -1,4 +1,3 @@
-source('R/xy_subsets.R')
 rcom_exy <- function() {
   #Paso 1: Matriz de pertenencia de nodos a comunidades
   comm_list <- Pij_comm$comm_obs$nodeclusters
