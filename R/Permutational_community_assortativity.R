@@ -6,9 +6,9 @@ library(igraph)
 library(igraphdata)
 library(linkcomm)
 library(reshape2)
-source("non_nested_height2.R")
-source("adj_to_edgelist.R")
-source("assortmentdiscreteLinkCom.R")
+source("R/non_nested_height2.R")
+source("R/adj_to_edgelist.R")
+source("R/assortmentdiscreteLinkCom.R")
 
 
 #### Permutation loop for Pij ####
