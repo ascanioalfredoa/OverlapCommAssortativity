@@ -29,10 +29,6 @@ tit <- identified_individuals[identified_individuals$Date == 1,]
 thornbill <- read.csv('data/mmc1.csv')
 ```
 
-```{r sparrow data}
-sparrow <- cmbDFrame(sparrow[,-c(1:3)])
-sparrow <- as.data.frame(sparrow$mrgCCombs[sparrow$mrgCCombs[,2] != '',])
-```
 
 ```{r sparrow data}
 sparrow_el <- sparrow %>% 
@@ -45,12 +41,25 @@ sparrow_g <- sparrow_el$mrgCCombs %>%
 ```
 
 ```{r}
-#7668 and 7673
-sum(sparrow_g[,1] == 7668 & sparrow_g[,2] == 7673, 
-    sparrow_g[,2] == 7668 & sparrow_g[,1] == 7673)
+sparrow_g$index <- 0
 
-sum(sparrow_g[,1] == 7668, 
-    sparrow_g[,2] == 7668, 
-    sparrow_g[,1] == 7673,
-    sparrow_g[,2] == 7673)
+for(i in 1:nrow(unique(sparrow_g))) {
+    RowsOcurrency <- rowSums(t(apply(sparrow_g, 1, function(x) x %in%  unique(sparrow_g)[i, ]))) == 2
+    
+    A <- sum(RowsOcurrency)
+
+
+    if(unique(sparrow_g)[i, 2] == "") {
+        B <- sum(sparrow_g == unique(sparrow_g)[i, 1])
+        } else {
+         B <- sum(sparrow_g == unique(sparrow_g)[i, 1],
+             sparrow_g == unique(sparrow_g)[i, 2])   
+        }
+
+    ##we apply the operation A/(B-A) given that by calculating the sum of the frecuency of A and B we are adding twice the value of the interaction A*B.
+    sparrow_g$index[RowsOcurrency] <- A/(B-A)
+
+print(i)
+}
+
 ```
