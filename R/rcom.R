@@ -1,6 +1,7 @@
 ############################################################################################
 #
-# Script to calculate r_c, from Shizuka & Farine
+# Script to calculate r_c, from Shizuka & Farine et al. 2016
+# https://www.sciencedirect.com/science/article/pii/S0003347215004480
 #
 # This is an example script for calculating community assortativity (r_c) from empirical data. 
 # We use the tit dataset available through the asnipe package. **Note that the figure in the 
@@ -24,14 +25,14 @@ library(assortnet)
 
 #Function to calculate r_c, with default number of bootstraps = 100, and default option to plot result. Plot will be saved as pdf file in R output folder as "rc_result.pdf".
 
-calc_rc=function(data, n.bootstraps=100, plot.result=T){
+calc_rc = function(data, n.bootstraps = 100, plot.result = F){
 
 # Create space to store results from bootstraps
 network.community <- matrix(0,ncol(data),ncol(data))
 network.present <- matrix(0,ncol(data),ncol(data))
 	
 # 1. Calculate network
-network <- get_network(data,data_format="GBI", association_index="SRI")
+network <- get_network(data, data_format = "GBI", association_index ="SRI")
 	
 # 2. Calculate community membership of the observed network
 community.observed <- fastgreedy.community(graph.adjacency(network,mode="undirected",weighted=TRUE))
