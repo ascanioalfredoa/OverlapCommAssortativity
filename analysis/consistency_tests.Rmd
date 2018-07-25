@@ -22,13 +22,15 @@ source('R/new_exy_calculation.r')
 source('R/Permutational_community_assortativity.r')
 source('R/adj_to_edgelist.r')
 source('R/xy_subsets.r')
+source('R/rcom.R')
 data('identified_individuals')
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
 
 ```{r original datasets}
-sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''), colClasses = c(rep('factor', 3), rep('character', 10)))
+sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''),
+                    colClasses = c(rep('factor', 3), rep('character', 10)))
 
 tit <- identified_individuals[identified_individuals$Date == 1,]
 
@@ -46,6 +48,20 @@ sparrow_wel <- sparrow_el$mrgCCombs %>%
     data.frame() %>%
     mutate(X1 = as.character(X1), X2 = as.character(X2))
 ```
+
+#the following is an alternative using the asnipe package
+
+```{r sparrow data}
+sparrow_inds <- sparrow %>%
+    select(-c(1:3)) %>% 
+    t() %>% 
+    data.frame() %>% 
+    gather(key = 'Group', value = 'ID') %>%
+    filter(ID != 'NA') %>%
+    select(ID, Group) %>% 
+    get_group_by_individual(data_format = 'individuals')
+    ```
+
 
 ```{r sparrow simple ratio association index}
 sparrow_wel$weight <- 0
@@ -86,7 +102,7 @@ sparrow_over <- getLinkCommunities(sparrow_wel) #overlapping communities
 
 Now we can compare the consistency of the proposed metric
 
-```{r sparrow rcomx}
+```{r sparrow rovcom}
 Pij_comm <- calc_Pmatrix(sparrow_g, 100)
 
 Exx <- rcomm_exx(Pij_comm)
@@ -96,3 +112,6 @@ rcom_spa <- (Exx - Exy)/(1 - Exy)
 print(rcom_spa)
 ```
 
+```{r sparrow rcom}
+calc_rc(sparrow_inds, plot = FALSE)
+```
