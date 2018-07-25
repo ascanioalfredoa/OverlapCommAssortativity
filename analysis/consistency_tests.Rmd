@@ -87,7 +87,11 @@ sparrow_inds <- sparrow %>%
     select(ID, Group) %>% 
     get_group_by_individual(data_format = 'individuals')
     ```
-
+```{r}
+#sparrow_g <- sparrow_inds %>% 
+#    get_network(data_format = "GBI", association_index ="SRI") %>%
+#    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
 
 ```{r sparrow graphs}
 sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE) 
