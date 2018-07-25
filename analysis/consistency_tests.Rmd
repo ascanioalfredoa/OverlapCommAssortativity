@@ -24,10 +24,11 @@ source('R/adj_to_edgelist.r')
 source('R/xy_subsets.r')
 data('identified_individuals')
 ```
+
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
 
 ```{r original datasets}
-sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''))
+sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''), colClasses = c(rep('factor', 3), rep('character', 10)))
 
 tit <- identified_individuals[identified_individuals$Date == 1,]
 
