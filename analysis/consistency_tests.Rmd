@@ -32,7 +32,7 @@ The following are the data used in [Shizuka et al. (2016)](https://www.sciencedi
 sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''),
                     colClasses = c(rep('factor', 3), rep('character', 10)))
 
-tit <- identified_individuals[identified_individuals$Date == 1,]
+tit <- gbi
 
 thornbill <- read.csv('data/mmc1.csv')
 ```
@@ -86,14 +86,15 @@ sparrow_inds <- sparrow %>%
     filter(ID != 'NA') %>%
     select(ID, Group) %>% 
     get_group_by_individual(data_format = 'individuals')
-    ```
+```
+
 ```{r}
 #sparrow_g <- sparrow_inds %>% 
 #    get_network(data_format = "GBI", association_index ="SRI") %>%
 #    graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
-```{r sparrow graphs}
+```{r sparrows graphs}
 sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE) 
 
 sparrow_g <- simplify(sparrow_g)#Discard multiple edges
@@ -108,19 +109,37 @@ sparrow_over <- getLinkCommunities(sparrow_wel) #overlapping communities
 
 Now we can compare the consistency of the proposed metric
 
-```{r sparrow rovcom}
+```{r sparrows rov}
 Pij_comm <- calc_Pmatrix(sparrow_g, 100)
 
 Exx <- rcomm_exx(Pij_comm)
 Exy <- rcom_exy()
 
-rcom_spa <- (Exx - Exy)/(1 - Exy)
-print(rcom_spa)
+rov_spa <- (Exx - Exy)/(1 - Exy)
+print(rov_spa)
 ```
 
-```{r sparrow rcom}
-calc_rc(sparrow_inds, plot.result = FALSE)
+```{r sparrows rcom}
+rcom_spa <- calc_rc(sparrow_inds, plot.result = FALSE)
 ```
 
 Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
 Ascanio’s coefficient (for overlapping communities): 0.43
+
+#2. Tit data
+
+```{r tits graph}
+tit_g <- tit %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+
+tit_dis <- cluster_fast_greedy(tit_g) #4 comms != 3 as reported by shizuka et al
+
+tit_over <- getLinkCommunities(get.edgelist(tit_g), plot = FALSE) #24 comms
+```
+
+```{r tits rcom}
+rcom_tit <- calc_rc(gbi, plot.result = FALSE)
+```
+
+Shizuka’s coefficient: 0.98 (the value reported in their papers was 0.99)
