@@ -143,3 +143,21 @@ rcom_tit <- calc_rc(gbi, plot.result = FALSE)
 ```
 
 Shizuka’s coefficient: 0.98 (the value reported in their papers was 0.99)
+
+#3. Thornbill data
+
+```{r thornbill graph}
+tho_g <- thornbill %>% 
+    select(-1) %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+
+tho_dis <- cluster_fast_greedy(tho_g) #3 comms
+
+tho_over <- getLinkCommunities(get.edgelist(tho_g), plot = FALSE) #1 comms
+```
+
+```{r thornbill rcom}
+rcom_tho <- calc_rc(thornbill, plot.result = FALSE)
+```
+
