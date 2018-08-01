@@ -139,6 +139,7 @@ tit_over <- getLinkCommunities(get.edgelist(tit_g), plot = FALSE) #24 comms
 ```
 
 ```{r tits rcom}
+set.seed(1)
 rcom_tit <- calc_rc(gbi, plot.result = FALSE)
 ```
 
@@ -162,4 +163,4 @@ set.seed(1)
 rcom_tho <- calc_rc(thornbill, plot.result = FALSE)
 ```
 
-Shizuka’s coefficient: 0.40 (the value reported in their papers was 046)
+Shizuka’s coefficient: 0.40 (the value reported in their papers was 0.46)
