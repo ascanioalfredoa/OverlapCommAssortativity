@@ -1,9 +1,9 @@
-rcom_exy <- function() {
+rcom_exy <- function(data) {
   #Paso 1: Matriz de pertenencia de nodos a comunidades
-  comm_list <- Pij_comm$comm_obs$nodeclusters
+  comm_list <- data$nodeclusters
   
   #Paso 2: Matriz de enlaces basada en Pij
-  Pij_edgelist <- Pij_comm$Pij
+  Pij_edgelist <- data$Pij
   
   Pij_edgelist[upper.tri(Pij_edgelist)] <- F
   

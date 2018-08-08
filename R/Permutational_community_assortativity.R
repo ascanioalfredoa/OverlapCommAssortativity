@@ -112,6 +112,6 @@ calc_Pmatrix <- function(data, n.permutations=100){
   P[!is.finite(P)] <- 0
   
   # Calculate assortment from known community membership
-  Pmatrix_comm <- list(Pij = P, comm_obs = community.observed)
+  Pmatrix_comm <- list(Pij = P, nodeclusters = community.observed)
   return(Pmatrix_comm)
 }

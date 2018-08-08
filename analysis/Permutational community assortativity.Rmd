@@ -123,10 +123,10 @@ Pij_comm <- calc_Pmatrix(coral.backbone, 100)
 
 
 ```{r}
-source("rcomm_exx.R")
-source("new_exy_calculation.R")
+source("../R/rcomm_exx.R")
+source("../R/new_exy_calculation.R")
 Exx <- rcomm_exx(Pij_comm)
-Exy <- rcom_exy()
+Exy <- rcom_exy(Pij_comm)
 
 rcom <- (Exx - Exy)/(1 - Exy)
 ```

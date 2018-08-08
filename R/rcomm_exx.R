@@ -2,7 +2,7 @@
 ## for the community assortativity calculus
 
 rcomm_exx <- function(data) {
-  types <- data$comm_obs$nodeclusters
+  types <- data$nodeclusters
   P <- data$Pij
   
   #### Combinatoria para termino Exx ####
