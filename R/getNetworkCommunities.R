@@ -1,8 +1,18 @@
 getNetworkCommunities <- function(data, algorithm = "linkcomm") {
     
+    require(igraph)
+    
     if (!(algorithm %in% c("linkcomm", "fastgreedy", "edge_betweennes",
                            "walktrap", "spinglass", "leading_eigenvector"))) {
         stop("The algorithm requested is not taken into account by the function")
+    }
+    
+    if(!is.igraph(data)) {
+        data <- as.matrix(data)
+        graph <- graph.edgelist(as.matrix(data[, 1:2]))
+        E(graph)$weight <- as.numeric(data[, 3])
+    } else {
+        graph <- data
     }
     
     if(algorithm == "linkcomm") {

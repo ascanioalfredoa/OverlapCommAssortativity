@@ -10,24 +10,12 @@ output: html_document
 ```{r packages & scripts}
 library(igraph)
 library(disparityfilter)
-library(cowplot)
 library(linkcomm)
-library(intergraph)
-library(GGally)
-library(ggrepel)
-library(viridis)
-library(ggnetwork)
-library(vegan)
 source("../R/cmbDFrame.R")
 source("../R/backbone2.R")
-#source("CVsplit.R")
 source("../R/strenght_distribution.R")
 source("../R/non_nested_height2.R")
-#source("../R/plotLinkCommMembers2.R")
-#source("../R/plotLinkCommGraph2.R")
-source("../R/Permutational_community_assortativity.R")
-#devtools::install_github("thomasp85/patchwork", force=T)
-#library(patchwork) #this replaces cowplot
+source("../R/Permutational_community_assortativity.R") # Por alguna razón hay un desperfecto en como el markdown en mi computadora está haciendo el source a las funciones. Hay que buscar una solución a esto.
 ```
 
 #2. Raw data
