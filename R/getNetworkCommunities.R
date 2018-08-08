@@ -9,7 +9,7 @@ getNetworkCommunities <- function(data, algorithm = "linkcomm") {
     
     if(!is.igraph(data)) {
         data <- as.matrix(data)
-        graph <- graph.edgelist(as.matrix(data[, 1:2]))
+        graph <- graph.edgelist(as.matrix(data[, 1:2]), directed = F)
         E(graph)$weight <- as.numeric(data[, 3])
     } else {
         graph <- data
@@ -30,7 +30,7 @@ getNetworkCommunities <- function(data, algorithm = "linkcomm") {
     } else if (algorithm == "fastgreedy") {
         community.observed <- fastgreedy.community(graph)
         community.observed <- data.frame(node = as.character(community.observed$names), cluster = as.numeric(community.observed$membership), stringsAsFactors = F)
-    } else if (algorithm == "edgebetweennes") {
+    } else if (algorithm == "edge_betweennes") {
         community.observed <- edge.betweenness.community(graph)
         community.observed <- data.frame(node = as.character(community.observed$names), cluster = as.numeric(community.observed$membership), stringsAsFactors = F)
     } else if (algorithm == "walktrap") {
