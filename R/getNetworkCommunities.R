@@ -4,7 +4,9 @@ getNetworkCommunities <- function(data, algorithm = "linkcomm") {
     
     if (!(algorithm %in% c("linkcomm", "fastgreedy", "edge_betweennes",
                            "walktrap", "spinglass", "leading_eigenvector"))) {
-        stop("The algorithm requested is not taken into account by the function")
+        stop("The algorithm requested is not taken into account by the function,
+             it must be one of the following: linkcomm, fastgreedy, edge_betweennes,
+                           walktrap, spinglass, leading_eigenvector")
     }
     
     if(!is.igraph(data)) {
