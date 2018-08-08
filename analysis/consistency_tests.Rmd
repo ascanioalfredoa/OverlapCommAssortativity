@@ -20,10 +20,11 @@ source('R/cmbDFrame.r')
 source('R/rcomm_exx.r')
 source('R/new_exy_calculation.r')
 source('R/Permutational_community_assortativity.r')
+source('R/getNetworkCommunities.r')
 source('R/adj_to_edgelist.r')
 source('R/xy_subsets.r')
 source('R/rcom.R')
-data('identified_individuals')
+data('group_by_individual')
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
@@ -110,10 +111,10 @@ sparrow_over <- getLinkCommunities(sparrow_wel) #overlapping communities
 Now we can compare the consistency of the proposed metric
 
 ```{r sparrows rov}
-Pij_comm <- calc_Pmatrix(sparrow_g, 100)
+Pij_comm <- calc_Pmatrix(sparrow_g, 100, 'linkcomm')
 
 Exx <- rcomm_exx(Pij_comm)
-Exy <- rcom_exy()
+Exy <- rcom_exy(Pij_comm)
 
 rov_spa <- (Exx - Exy)/(1 - Exy)
 print(rov_spa)
@@ -121,6 +122,7 @@ print(rov_spa)
 
 ```{r sparrows rcom}
 rcom_spa <- calc_rc(sparrow_inds, plot.result = FALSE)
+print(rcom_spa)
 ```
 
 Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
@@ -141,9 +143,10 @@ tit_over <- getLinkCommunities(get.edgelist(tit_g), plot = FALSE) #24 comms
 ```{r tits rcom}
 set.seed(1)
 rcom_tit <- calc_rc(gbi, plot.result = FALSE)
+print(rcom_tit)
 ```
 
-Shizuka’s coefficient: 0.98 (the value reported in their papers was 0.99)
+Shizuka’s coefficient: 0.985 (the value reported in their papers was 0.99)
 
 #3. Thornbill data
 
