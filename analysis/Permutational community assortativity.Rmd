@@ -33,8 +33,8 @@ source("../R/Permutational_community_assortativity.R")
 #2. Raw data
 
 ```{r Data}
-rawnet <- read.csv("master_coral_dis_net.csv",sep=",",na.strings="",header=T, stringsAsFactors = F)
-coral.att <- read.csv("glossary.csv")
+rawnet <- read.csv("../data/master_codirnet.csv",sep=",",na.strings="",header=T, stringsAsFactors = F)
+coral.att <- read.csv("../data/glossary_codirnet.csv")
 ```
 
 ```{r, underscore to spaces}
