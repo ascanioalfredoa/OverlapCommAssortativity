@@ -41,7 +41,7 @@ rcomm_exx <- function(data) {
     
     Pij_edgelist[upper.tri(Pij_edgelist)] <- F
     
-    Pij_edgelist <- cbind(Pij_edgelist, Topic = row.names(Pij_edgelist))
+    Pij_edgelist <- data.frame(Pij_edgelist, Topic = row.names(Pij_edgelist), stringsAsFactors = F, check.names = F)
     
     Pij_edgelist <- melt(Pij_edgelist, variable.name = "Topic", value.name = "Prob_ij")
     
