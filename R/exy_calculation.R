@@ -1,4 +1,4 @@
-rcom_exy <- function(data) {
+rcomm_exy <- function(data) {
   #Paso 1: Matriz de pertenencia de nodos a comunidades
   comm_list <- data$nodeclusters
   
