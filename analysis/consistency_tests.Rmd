@@ -3,7 +3,7 @@ title: "Consistency tests"
 author: "LMM"
 date: "17 de julio de 2018"
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -21,8 +21,8 @@ source('R/exx_calculation.R')
 source('R/exy_calculation.r')
 source('R/Permutational_community_assortativity.r')
 source('R/getNetworkCommunities.r')
-source('R/adj_to_edgelist.r')
 source('R/xy_subsets.r')
+source('R/adj_to_edgelist.r')
 source('R/rcom.R')
 data('group_by_individual')
 ```
@@ -41,11 +41,11 @@ thornbill <- read.csv('data/mmc1.csv')
 #1. Sparrow data
 
 ```{r sparrow data}
-sparrow_el <- sparrow %>% 
+sparrow_el <- sparrow %>%
     select(-c(1:3)) %>%
     cmbDFrame()
 
-sparrow_wel <- sparrow_el$mrgCCombs %>% 
+sparrow_wel <- sparrow_el$mrgCCombs %>%
     data.frame() %>%
     mutate(X1 = as.character(X1), X2 = as.character(X2))
 ```
@@ -56,7 +56,7 @@ sparrow_wel$weight <- 0
 
 for(i in 1:nrow(unique(sparrow_wel))) {
     RowsOcurrency <- rowSums(t(apply(sparrow_wel, 1, function(x) x %in%  unique(sparrow_wel)[i, ]))) == 2
-    
+
     A <- sum(RowsOcurrency)
 
 
@@ -80,23 +80,23 @@ sparrow_wel <- sparrow_wel[sparrow_wel$X2 != '',] #Discard solitary individuals
 
 ```{r sparrow data}
 sparrow_inds <- sparrow %>%
-    select(-c(1:3)) %>% 
-    t() %>% 
-    data.frame() %>% 
+    select(-c(1:3)) %>%
+    t() %>%
+    data.frame() %>%
     gather(key = 'Group', value = 'ID') %>%
     filter(ID != 'NA') %>%
-    select(ID, Group) %>% 
+    select(ID, Group) %>%
     get_group_by_individual(data_format = 'individuals')
 ```
 
 ```{r}
-#sparrow_g <- sparrow_inds %>% 
+#sparrow_g <- sparrow_inds %>%
 #    get_network(data_format = "GBI", association_index ="SRI") %>%
 #    graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
 ```{r sparrows graphs}
-sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE) 
+sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE)
 
 sparrow_g <- simplify(sparrow_g)#Discard multiple edges
 #sparrow_g <- graph.adjacency(network, mode = "undirected", weighted = TRUE)
@@ -131,7 +131,7 @@ Ascanio’s coefficient (for overlapping communities): 0.43
 #2. Tit data
 
 ```{r tits graph}
-tit_g <- tit %>% 
+tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 
@@ -151,8 +151,8 @@ Shizuka’s coefficient: 0.985 (the value reported in their papers was 0.99)
 #3. Thornbill data
 
 ```{r thornbill graph}
-tho_g <- thornbill %>% 
-    select(-1) %>% 
+tho_g <- thornbill %>%
+    select(-1) %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 
