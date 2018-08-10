@@ -60,6 +60,7 @@ sparrow_g <- sparrow_inds %>%
 Now we can compare the consistency of the proposed metric
 
 ```{r sparrows rov}
+set.seed(1)
 Pij_comm <- calc_Pmatrix(sparrow_g, 100, 'linkcomm')
 
 Exx <- rcomm_exx(Pij_comm)
@@ -70,11 +71,13 @@ print(rov_spa)
 ```
 
 ```{r sparrows rcom}
+set.seed(1)
 rcom_spa <- calc_rc(sparrow_inds, plot.result = FALSE)
 print(rcom_spa)
 ```
 
 ```{r sparrows rov discrete}
+set.seed(1)
 Pij_spa_dis <- calc_Pmatrix(sparrow_g, 100, 'fastgreedy')
 
 Exx_spa_dis <- rcomm_exx(Pij_spa_dis)
@@ -87,7 +90,7 @@ print(rov_spa_dis)
 
 Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
 Ascanio’s coefficient: 0.43 (for overlapping communities)
-Ascanio’s coefficient: 0.14 (for fast greedy communities)
+Ascanio’s coefficient: 0.15 (for fast greedy communities)
 
 #2. Tit data
 
@@ -95,6 +98,7 @@ Ascanio’s coefficient: 0.14 (for fast greedy communities)
 tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
+
 V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
 ```
 
@@ -115,8 +119,23 @@ rov_tit_over <- (Exx_tit_over - Exy_tit_over)/(1 - Exy_tit_over)
 print(rov_tit_over)
 ```
 
+```{r tits rov discrete}
+set.seed(1)
 
-Shizuka’s coefficient: 0.985 (the value reported in their papers was 0.99)
+Pij_tit_dis <- calc_Pmatrix(tit_g, 100, 'fastgreedy')
+
+Exx_tit_dis <- rcomm_exx(Pij_tit_dis)
+Exy_tit_dis <- rcomm_exy(Pij_tit_dis)
+
+rov_tit_dis <- (Exx_tit_dis - Exy_tit_dis)/(1 - Exy_tit_dis)
+
+print(rov_tit_dis)
+```
+
+
+Shizuka’s coefficient: 0.985
+Ascanio’s coefficient: 0.47 (for overlapping communities)
+Ascanio’s coefficient: 0.30 (for fast greedy communities)
 
 #3. Thornbill data
 
@@ -140,10 +159,41 @@ Pij_tho_over <- calc_Pmatrix(tho_g, 100, 'linkcomm')
 Exx_tho_over <- rcomm_exx(Pij_tho_over)
 Exy_tho_over <- rcomm_exy(Pij_tho_over)
 
-rov_tit_over <- (Exx_tho_over - Exy_tho_over)/(1 - Exy_tho_over)
+rov_tho_over <- (Exx_tho_over - Exy_tho_over)/(1 - Exy_tho_over)
 print(rov_tho_over)
 ```
+
+```{r thornbill rov discrete}
+set.seed(1)
+Pij_tho_dis <- calc_Pmatrix(tho_g, 100, 'fastgreedy')
+
+Exx_tho_dis <- rcomm_exx(Pij_tho_dis)
+Exy_tho_dis <- rcomm_exy(Pij_tho_dis)
+
+rov_tho_dis <- (Exx_tho_dis - Exy_tho_dis)/(1 - Exy_tho_dis)
+
+print(rov_tho_dis)
 ```
 
-
 Shizuka’s coefficient: 0.40 (the value reported in their papers was 0.46)
+Ascanio’s coefficient: 0.97 (for overlapping communities)
+Ascanio’s coefficient: 0.30 (for fast greedy communities)
+
+```{r random network}
+set.seed(1)
+rnd_g <- sample_gnp(50,0.5)
+V(rnd_g)$name <- paste("N", as.character(V(rnd_g)), sep = "")
+E(rnd_g)$weight <- sample(length(E(rnd_g)))
+```
+
+```{r random network rov linkcomm}
+Pij_rnd_over <- calc_Pmatrix(rnd_g, 100, 'linkcomm')
+
+Exx_rnd_over <- rcomm_exx(Pij_rnd_over)
+Exy_rnd_over <- rcomm_exy(Pij_rnd_over)
+
+rov_rnd_over <- (Exx_rnd_over - Exy_rnd_over)/(1 - Exy_rnd_over)
+
+print(rov_rnd_over)
+```
+
