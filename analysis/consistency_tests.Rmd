@@ -95,6 +95,7 @@ Ascanio’s coefficient: 0.14 (for fast greedy communities)
 tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
+V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
 ```
 
 ```{r tits rcom}

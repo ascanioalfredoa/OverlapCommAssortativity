@@ -21,7 +21,7 @@ rcomm_exy <- function(data) {
   Pij_edgelist <- Pij_edgelist[!is.na(Pij_edgelist[, 3]), ]
   
   #Paso 3: Ampliar matriz Pij_edgelist
-  Pij_edgelist[xy_subsets(Pij_comm)] <- F
+  Pij_edgelist[xy_subsets(data)] <- F
   
   #Paso 4: Determinar los conjuntos a los que pertenece cada enlace
   edges_subsets <- do.call(rbind, strsplit(gsub("C", "", names(Pij_edgelist)[-c(1:3)]), split = "_"))
