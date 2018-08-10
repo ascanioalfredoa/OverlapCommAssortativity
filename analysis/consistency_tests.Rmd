@@ -41,44 +41,6 @@ thornbill <- read.csv('data/mmc1.csv')
 #1. Sparrow data
 
 ```{r sparrow data}
-sparrow_el <- sparrow %>%
-    select(-c(1:3)) %>%
-    cmbDFrame()
-
-sparrow_wel <- sparrow_el$mrgCCombs %>%
-    data.frame() %>%
-    mutate(X1 = as.character(X1), X2 = as.character(X2))
-```
-
-
-```{r sparrow simple ratio association index}
-sparrow_wel$weight <- 0
-
-for(i in 1:nrow(unique(sparrow_wel))) {
-    RowsOcurrency <- rowSums(t(apply(sparrow_wel, 1, function(x) x %in%  unique(sparrow_wel)[i, ]))) == 2
-
-    A <- sum(RowsOcurrency)
-
-
-    if(unique(sparrow_wel)[i, 2] == "") {
-        B <- sum(sparrow_wel == unique(sparrow_wel)[i, 1])
-        } else {
-         B <- sum(sparrow_wel == unique(sparrow_wel)[i, 1],
-             sparrow_wel == unique(sparrow_wel)[i, 2])   
-        }
-
-    ##we apply the operation A/(B-A) given that by calculating the sum of the frecuency of A and B we are adding twice the value of the interaction A*B.
-    sparrow_wel$weight[RowsOcurrency] <- A/(B-A)
-
-print(paste(round(100*i/nrow(unique(sparrow_wel)), 1), "%"))
-}
-
-sparrow_wel <- sparrow_wel[sparrow_wel$X2 != '',] #Discard solitary individuals
-```
-
-#the following is an alternative using the asnipe package
-
-```{r sparrow data}
 sparrow_inds <- sparrow %>%
     select(-c(1:3)) %>%
     t() %>%
@@ -89,23 +51,10 @@ sparrow_inds <- sparrow %>%
     get_group_by_individual(data_format = 'individuals')
 ```
 
-```{r}
-#sparrow_g <- sparrow_inds %>%
-#    get_network(data_format = "GBI", association_index ="SRI") %>%
-#    graph.adjacency(mode = "undirected", weighted = TRUE)
-```
-
-```{r sparrows graphs}
-sparrow_g <- graph_from_data_frame(sparrow_wel, directed = FALSE)
-
-sparrow_g <- simplify(sparrow_g)#Discard multiple edges
-#sparrow_g <- graph.adjacency(network, mode = "undirected", weighted = TRUE)
-
-sparrow_dis <- cluster_fast_greedy(sparrow_g) #discrete communities
-#plot(sparrow_comm, sparrow_g)
-
-sparrow_over <- getLinkCommunities(sparrow_wel) #overlapping communities
-#plotLinkCommGraph(sparrow_over)
+```{r sparrow graph}
+sparrow_g <- sparrow_inds %>%
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
 Now we can compare the consistency of the proposed metric
@@ -125,8 +74,20 @@ rcom_spa <- calc_rc(sparrow_inds, plot.result = FALSE)
 print(rcom_spa)
 ```
 
+```{r sparrows rov discrete}
+Pij_spa_dis <- calc_Pmatrix(sparrow_g, 100, 'fastgreedy')
+
+Exx_spa_dis <- rcomm_exx(Pij_spa_dis)
+Exy_spa_dis <- rcomm_exy(Pij_spa_dis)
+
+rov_spa_dis <- (Exx_spa_dis - Exy_spa_dis)/(1 - Exy_spa_dis)
+print(rov_spa_dis)
+```
+
+
 Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
-Ascanio’s coefficient (for overlapping communities): 0.43
+Ascanio’s coefficient: 0.43 (for overlapping communities)
+Ascanio’s coefficient: 0.14 (for fast greedy communities)
 
 #2. Tit data
 
@@ -134,10 +95,6 @@ Ascanio’s coefficient (for overlapping communities): 0.43
 tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
-
-tit_dis <- cluster_fast_greedy(tit_g) #4 comms != 3 as reported by shizuka et al
-
-tit_over <- getLinkCommunities(get.edgelist(tit_g), plot = FALSE) #24 comms
 ```
 
 ```{r tits rcom}
@@ -145,6 +102,18 @@ set.seed(1)
 rcom_tit <- calc_rc(gbi, plot.result = FALSE)
 print(rcom_tit)
 ```
+
+```{r tits rov linkcomm}
+set.seed(1)
+Pij_tit_over <- calc_Pmatrix(tit_g, 100, 'linkcomm')
+
+Exx_tit_over <- rcomm_exx(Pij_tit_over)
+Exy_tit_over <- rcomm_exy(Pij_tit_over)
+
+rov_tit_over <- (Exx_tit_over - Exy_tit_over)/(1 - Exy_tit_over)
+print(rov_tit_over)
+```
+
 
 Shizuka’s coefficient: 0.985 (the value reported in their papers was 0.99)
 
@@ -155,15 +124,25 @@ tho_g <- thornbill %>%
     select(-1) %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
-
-tho_dis <- cluster_fast_greedy(tho_g) #3 comms
-
-tho_over <- getLinkCommunities(get.edgelist(tho_g), plot = FALSE) #1 comms
 ```
 
 ```{r thornbill rcom}
 set.seed(1)
 rcom_tho <- calc_rc(thornbill, plot.result = FALSE)
+print(rcom_tho)
 ```
+
+```{r thornbill linkcomm}
+set.seed(1)
+Pij_tho_over <- calc_Pmatrix(tho_g, 100, 'linkcomm')
+
+Exx_tho_over <- rcomm_exx(Pij_tho_over)
+Exy_tho_over <- rcomm_exy(Pij_tho_over)
+
+rov_tit_over <- (Exx_tho_over - Exy_tho_over)/(1 - Exy_tho_over)
+print(rov_tho_over)
+```
+```
+
 
 Shizuka’s coefficient: 0.40 (the value reported in their papers was 0.46)
