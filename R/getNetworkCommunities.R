@@ -13,6 +13,7 @@ getNetworkCommunities <- function(data, algorithm = "linkcomm") {
         data <- as.matrix(data)
         graph <- graph.edgelist(as.matrix(data[, 1:2]), directed = F)
         E(graph)$weight <- as.numeric(data[, 3])
+        graph <- simplify(graph)
     } else {
         graph <- data
     }

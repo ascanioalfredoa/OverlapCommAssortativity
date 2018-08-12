@@ -36,8 +36,13 @@ networkPerm <- function(data) {
 }
 #Function to calculate r_c, with default number of permutations = 100, and default option to plot result. Plot will be saved as pdf file in R output folder as "rc_result.pdf".
 
-calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm"){
+calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm",
+                         permutations = TRUE, boot.data = NULL){
   
+    if(permutations == FALSE & is.null(boot.data)) {
+        stop("To run the bootstrap algorithm, remember to fill the 'boot.data' 
+             parameter with the original observation matrix from which the network comes")
+    }
   # Create space to store results from permutations
   network.community <- array(0, dim = c(length(V(data)),length(V(data))),
                              dimnames = list(names(V(data)), names(V(data))))
@@ -58,7 +63,14 @@ calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm"){
   
   for (i in 1:n.permutations) {
     # This step bootrstraps the sampling periods
-    network.perm <- networkPerm(data)
+    if(permutations == FALSE)   {
+        gbi.boot <- boot.data[sample(1:nrow(boot.data),nrow(boot.data),replace=TRUE),]
+        network.perm <- get_network(gbi.boot,data_format="GBI", association_index="SRI")
+        network.perm <- adj_to_edgelist(network.perm)
+        network.perm <- network.perm[network.perm$V3 != 0, ]
+    } else {
+        network.perm <- networkPerm(data)
+    }
     
     # This step calculates the community membership from the bootstrapped network
     community.perm <- getNetworkCommunities(network.perm, algorithm)
