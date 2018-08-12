@@ -76,24 +76,29 @@ rcomm_exx <- function(data) {
     
     #Paso 5: Calcular la probabilidad de Exy^2 por cada intersección posible
     #empezando por los enlaces más intersectados en diferentes comunidades
-    Intersections <- sort(unique(rowSums(Pij_edgelist[, -c(1:3)])), decreasing = T)
-    Intersections <- Intersections[Intersections != 0]
-    
-    Exx <- 0
-    edges_count <- 0
-    for(i in 1:length(Intersections)) {
-        Pij_edgelist_split <- Pij_edgelist[rowSums(Pij_edgelist[, -c(1:3)]) == Intersections[i], ]
+    if(nrow(y) == 1) {
+        Exx <- 2*sum(Pij_edgelist$Prob_ij)/sum(2*Pij_edgelist$Prob_ij)
+    } else {
+        Intersections <- sort(unique(rowSums(Pij_edgelist[, -c(1:3)])), decreasing = T)
+        Intersections <- Intersections[Intersections != 0]
         
-        Pij_split_internames <- apply(Pij_edgelist_split[, -c(1:3)], 1, function(x) paste(edges_subsets[as.logical(x), 1], collapse = " & "))
-        
-        Internames <- unique(Pij_split_internames)
-        
-        for(j in 1:length(Internames)) {
-            Exx <- Exx + sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])#/sum(2*Pij_edgelist$Prob_ij)
-                        edges_count <- edges_count + length(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])
+        Exx <- 0
+        edges_count <- 0
+        for(i in 1:length(Intersections)) {
+            Pij_edgelist_split <- Pij_edgelist[rowSums(Pij_edgelist[, -c(1:3)]) == Intersections[i], ]
+            
+            Pij_split_internames <- apply(Pij_edgelist_split[, -c(1:3)], 1, function(x) paste(edges_subsets[as.logical(x), 1], collapse = " & "))
+            
+            Internames <- unique(Pij_split_internames)
+            
+            for(j in 1:length(Internames)) {
+                Exx <- Exx + sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])#/sum(2*Pij_edgelist$Prob_ij)
+                edges_count <- edges_count + length(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])
+            }
         }
+        
+        Exx <- 2*Exx/sum(2*Pij_edgelist$Prob_ij)
     }
     
-    Exx <- 2*Exx/sum(2*Pij_edgelist$Prob_ij)
     return(Exx)
 }

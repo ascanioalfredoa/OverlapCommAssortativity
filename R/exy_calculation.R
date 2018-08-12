@@ -43,21 +43,25 @@ rcomm_exy <- function(data) {
   
   #Paso 5: Calcular la probabilidad de Exy^2 por cada intersección posible
   #empezando por los enlaces más intersectados en diferentes comunidades
-  Intersections <- sort(unique(rowSums(Pij_edgelist[, -c(1:3)])), decreasing = T)
-  
-  Exy <- 0
-  edges_count <- 0
-  for(i in 1:length(Intersections)) {
-    Pij_edgelist_split <- Pij_edgelist[rowSums(Pij_edgelist[, -c(1:3)]) == Intersections[i], ]
-    
-    Pij_split_internames <- apply(Pij_edgelist_split[, -c(1:3)], 1, function(x) paste(edges_subsets[as.logical(x), 1], collapse = " & "))
-    
-    Internames <- unique(Pij_split_internames)
-    
-    for(j in 1:length(Internames)) {
-      Exy <- Exy + (sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])/sum(2*Pij_edgelist$Prob_ij))^2
-      edges_count <- edges_count + length(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])
-    }
+  if(ncol(Pij_edgelist) == 4) {
+      Exy <- (sum(Pij_edgelist$Prob_ij)^2)/((sum(2*Pij_edgelist$Prob_ij))^2)
+  } else {
+      Intersections <- sort(unique(rowSums(Pij_edgelist[, -c(1:3)])), decreasing = T)
+      
+      Exy <- 0
+      edges_count <- 0
+      for(i in 1:length(Intersections)) {
+          Pij_edgelist_split <- Pij_edgelist[rowSums(Pij_edgelist[, -c(1:3)]) == Intersections[i], ]
+          
+          Pij_split_internames <- apply(Pij_edgelist_split[, -c(1:3)], 1, function(x) paste(edges_subsets[as.logical(x), 1], collapse = " & "))
+          
+          Internames <- unique(Pij_split_internames)
+          
+          for(j in 1:length(Internames)) {
+              Exy <- Exy + (sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])/(sum(2*Pij_edgelist$Prob_ij))^2)
+              edges_count <- edges_count + length(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])
+          }
+      }
   }
   
   #Nodos que quedan fuera del análisis
