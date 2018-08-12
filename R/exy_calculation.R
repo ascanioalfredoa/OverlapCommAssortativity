@@ -58,10 +58,12 @@ rcomm_exy <- function(data) {
           Internames <- unique(Pij_split_internames)
           
           for(j in 1:length(Internames)) {
-              Exy <- Exy + (sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])/(sum(2*Pij_edgelist$Prob_ij))^2)
+              Exy <- Exy + sum(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])#/sum(2*Pij_edgelist$Prob_ij)^2
               edges_count <- edges_count + length(Pij_edgelist_split$Prob_ij[Pij_split_internames == Internames[j]])
           }
       }
+      
+      Exy <- Exy/((2*sum(Pij_edgelist$Prob_ij))^2)
   }
   
   #Nodos que quedan fuera del análisis

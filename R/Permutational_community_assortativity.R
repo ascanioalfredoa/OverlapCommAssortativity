@@ -40,8 +40,7 @@ calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm",
                          permutations = TRUE, boot.data = NULL){
   
     if(permutations == FALSE & is.null(boot.data)) {
-        stop("To run the bootstrap algorithm, remember to fill the 'boot.data' 
-             parameter with the original observation matrix from which the network comes")
+        stop("To run the bootstrap algorithm, remember to fill the 'boot.data' parameter with the original observation matrix from which the network comes")
     }
   # Create space to store results from permutations
   network.community <- array(0, dim = c(length(V(data)),length(V(data))),

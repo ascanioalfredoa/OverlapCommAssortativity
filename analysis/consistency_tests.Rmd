@@ -76,7 +76,7 @@ rcom_spa <- calc_rc(sparrow_inds, plot.result = FALSE)
 print(rcom_spa)
 ```
 
-```{r sparrows rov discrete}
+```{r sparrows permutation rov discrete}
 set.seed(1)
 Pij_spa_dis <- calc_Pmatrix(sparrow_g, 100, 'fastgreedy')
 
@@ -87,19 +87,34 @@ rov_spa_dis <- (Exx_spa_dis - Exy_spa_dis)/(1 - Exy_spa_dis)
 print(rov_spa_dis)
 ```
 
+```{r sparrows bootstrap fastgreedy}
+set.seed(1)
+Pij_comm <- calc_Pmatrix(sparrow_g, 100, 'fastgreedy', permutations = F, boot.data = sparrow_inds)
+
+Exx <- rcomm_exx(Pij_comm)
+Exy <- rcomm_exy(Pij_comm)
+
+rov_spa <- (Exx - Exy)/(1 - Exy)
+print(rov_spa)
+```
+
+
 
 Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
-Ascanio’s coefficient: 0.43 (for overlapping communities)
-Ascanio’s coefficient: 0.15 (for fast greedy communities)
+Ascanio’s coefficient: 0.57 (for overlapping communities with permutations)
+Ascanio’s coefficient: 0.36 (for fast greedy communities with permutations)
+Ascanio's coefficient: 0.90 (for fast greedy communities with bootstrap / must be similar to Shizuka's coefficient)
 
 #2. Tit data
 
 ```{r tits graph}
+colnames(tit) <- paste("N", as.character(V(tit_g)), sep = "")
+
 tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 
-V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
+#V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
 ```
 
 ```{r tits rcom}
@@ -132,10 +147,23 @@ rov_tit_dis <- (Exx_tit_dis - Exy_tit_dis)/(1 - Exy_tit_dis)
 print(rov_tit_dis)
 ```
 
+```{r tits rov discrete}
+set.seed(1)
+
+Pij_tit_dis <- calc_Pmatrix(tit_g, 100, 'fastgreedy', permutations = F, boot.data = tit)
+
+Exx_tit_dis <- rcomm_exx(Pij_tit_dis)
+Exy_tit_dis <- rcomm_exy(Pij_tit_dis)
+
+rov_tit_dis <- (Exx_tit_dis - Exy_tit_dis)/(1 - Exy_tit_dis)
+
+print(rov_tit_dis)
+```
 
 Shizuka’s coefficient: 0.985
-Ascanio’s coefficient: 0.47 (for overlapping communities)
-Ascanio’s coefficient: 0.30 (for fast greedy communities)
+Ascanio’s coefficient:  (for overlapping communities with permutations)
+Ascanio’s coefficient: 0.33 (for fast greedy communities with permutations)
+Ascanio’s coefficient: 0.99 (for fast greedy communities with bootstrap / must be equivalent to Shizuka's coefficient)
 
 #3. Thornbill data
 
@@ -175,9 +203,22 @@ rov_tho_dis <- (Exx_tho_dis - Exy_tho_dis)/(1 - Exy_tho_dis)
 print(rov_tho_dis)
 ```
 
+```{r thornbill rov discrete bootstrap}
+set.seed(1)
+Pij_tho_dis <- calc_Pmatrix(tho_g, 100, 'fastgreedy', permutations = F, boot.data = thornbill)
+
+Exx_tho_dis <- rcomm_exx(Pij_tho_dis)
+Exy_tho_dis <- rcomm_exy(Pij_tho_dis)
+
+rov_tho_dis <- (Exx_tho_dis - Exy_tho_dis)/(1 - Exy_tho_dis)
+
+print(rov_tho_dis)
+```
+
 Shizuka’s coefficient: 0.40 (the value reported in their papers was 0.46)
-Ascanio’s coefficient: 0.97 (for overlapping communities)
-Ascanio’s coefficient: 0.30 (for fast greedy communities)
+Ascanio’s coefficient:  (for overlapping communities with permutations)
+Ascanio’s coefficient: 0.33 (for fast greedy communities with permutations)
+Ascanio’s coefficient: 0.62 (for fast greedy communities with boostrap / must be equivalent to Shizuka's coefficient)
 
 ```{r random network}
 set.seed(1)
