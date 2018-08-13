@@ -221,12 +221,20 @@ print(rov_tho_dis_b)
 
 # 4. Random data
 
-```{r random network}
+We generate random sampling data (50 spp and 200 samples) and then we apply the same association index as
+the previous matrices
+
+```{r random graph}
 set.seed(1)
-rnd_g <- sample_gnp(50,0.5)
-V(rnd_g)$name <- paste("N", as.character(V(rnd_g)), sep = "")
-E(rnd_g)$weight <- sample(length(E(rnd_g)))
+
+rnd_data <- matrix(rbinom(10000, 1, 0.5), ncol=50) %>%
+    data.frame()
+
+rnd_g <- rnd_data %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
+
 
 ```{r random network rov linkcomm}
 Pij_rnd_over <- calc_Pmatrix(rnd_g, 100, 'linkcomm')
@@ -241,12 +249,15 @@ print(rov_rnd_over)
 
 ```{r random shizuka rcom}
 set.seed(1)
+
 rcom_rnd <- calc_rc(get.adjacency(rnd_g), plot.result = FALSE)
+
 print(rcom_rnd)
 ```
 
-```{r random linkcomm with permutations}
+```{r random fastgreedy with permutations}
 set.seed(1)
+
 Pij_rnd_dis_p <- calc_Pmatrix(rnd_g, 100, 'fastgreedy')
 
 Exx_rnd_dis_p <- rcomm_exx(Pij_rnd_dis_p)
@@ -256,10 +267,11 @@ rov_rnd_dis_p <- (Exx_rnd_dis_p - Exy_rnd_dis_p)/(1 - Exy_rnd_dis_p)
 print(rov_rnd_dis_p)
 ```
 
-```{r random linkcomm with bootstrap}
+```{r random fastgreedy with bootstrap}
 set.seed(1)
-Pij_rnd_dis_b <- calc_bmatrix( , 100, 'fastgreedy', permutations = F,
-                              boot.data = )
+
+Pij_rnd_dis_b <- calc_Pmatrix(rnd_g, 100, 'fastgreedy', permutations = F,
+                              boot.data = rnd_data)
 
 Exx_rnd_dis_b <- rcomm_exx(Pij_rnd_dis_b)
 Exy_rnd_dis_b <- rcomm_exy(Pij_rnd_dis_b)
@@ -268,7 +280,7 @@ rov_rnd_dis_b <- (Exx_rnd_dis_b - Exy_rnd_dis_b)/(1 - Exy_rnd_dis_b)
 print(rov_rnd_dis_b)
 ```
 
- * Shizuka’s coefficient (fastgreedy, bootstrap): 
+ * Shizuka’s coefficient (fastgreedy, bootstrap): 0.001
  * Ascanio’s coefficient (linkcomm, permutations): 1
- * Ascanio’s coefficient (fastgreedy, bootstrap):
- * Ascanio’s coefficient (fastgreedy, permutations):
+ * Ascanio’s coefficient (fastgreedy, bootstrap): 0.55
+ * Ascanio’s coefficient (fastgreedy, permutations): 0.50
