@@ -99,11 +99,10 @@ print(rov_spa)
 ```
 
 
-
-Shizuka’s coefficient: 0.83 (the value reported in their papers was 0.81)
-Ascanio’s coefficient: 0.57 (for overlapping communities with permutations)
-Ascanio’s coefficient: 0.36 (for fast greedy communities with permutations)
-Ascanio's coefficient: 0.90 (for fast greedy communities with bootstrap / must be similar to Shizuka's coefficient)
+ * Shizuka’s coefficient (fastgreedy, bootstrap): 0.83 (the value reported in their papers was 0.81).
+ * Ascanio's coefficient (fastgreedy, bootstrap): 0.90
+ * Ascanio’s coefficient (linkcomm, permutations): 0.57
+ * Ascanio’s coefficient (fastgreedy, permutations): 0.36
 
 #2. Tit data
 
@@ -134,7 +133,7 @@ rov_tit_over <- (Exx_tit_over - Exy_tit_over)/(1 - Exy_tit_over)
 print(rov_tit_over)
 ```
 
-```{r tits rov discrete}
+```{r tits rov discrete using permutations}
 set.seed(1)
 
 Pij_tit_dis <- calc_Pmatrix(tit_g, 100, 'fastgreedy')
@@ -147,25 +146,25 @@ rov_tit_dis <- (Exx_tit_dis - Exy_tit_dis)/(1 - Exy_tit_dis)
 print(rov_tit_dis)
 ```
 
-```{r tits rov discrete}
+```{r tits rov discrete using bootstrap}
 set.seed(1)
 
-Pij_tit_dis <- calc_Pmatrix(tit_g, 100, 'fastgreedy', permutations = F, boot.data = tit)
+Pij_tit_dis_b <- calc_Pmatrix(tit_g, 100, 'fastgreedy', permutations = F, boot.data = tit)
 
-Exx_tit_dis <- rcomm_exx(Pij_tit_dis)
-Exy_tit_dis <- rcomm_exy(Pij_tit_dis)
+Exx_tit_dis_b <- rcomm_exx(Pij_tit_dis_b)
+Exy_tit_dis_b <- rcomm_exy(Pij_tit_dis_b)
 
-rov_tit_dis <- (Exx_tit_dis - Exy_tit_dis)/(1 - Exy_tit_dis)
+rov_tit_dis_b <- (Exx_tit_dis_b - Exy_tit_dis_b)/(1 - Exy_tit_dis_b)
 
-print(rov_tit_dis)
+print(rov_tit_dis_b)
 ```
 
-Shizuka’s coefficient: 0.985
-Ascanio’s coefficient:  (for overlapping communities with permutations)
-Ascanio’s coefficient: 0.33 (for fast greedy communities with permutations)
-Ascanio’s coefficient: 0.99 (for fast greedy communities with bootstrap / must be equivalent to Shizuka's coefficient)
+ * Shizuka’s coefficient (fastgreedy, bootstrap): 0.985
+ * Ascanio’s coefficient (fastgreedy, bootstrap): 0.99
+ * Ascanio’s coefficient (linkcomm, permutations): 0.47
+ * Ascanio’s coefficient (fastgreedy, permutations): 0.33
 
-#3. Thornbill data
+# 3. Thornbill data
 
 ```{r thornbill graph}
 tho_g <- thornbill %>%
@@ -191,34 +190,36 @@ rov_tho_over <- (Exx_tho_over - Exy_tho_over)/(1 - Exy_tho_over)
 print(rov_tho_over)
 ```
 
-```{r thornbill rov discrete}
+```{r thornbill rov discrete with permutations}
 set.seed(1)
-Pij_tho_dis <- calc_Pmatrix(tho_g, 100, 'fastgreedy')
+Pij_tho_dis_p <- calc_Pmatrix(tho_g, 100, 'fastgreedy')
 
-Exx_tho_dis <- rcomm_exx(Pij_tho_dis)
-Exy_tho_dis <- rcomm_exy(Pij_tho_dis)
+Exx_tho_dis_p <- rcomm_exx(Pij_tho_dis_p)
+Exy_tho_dis_p <- rcomm_exy(Pij_tho_dis_p)
 
-rov_tho_dis <- (Exx_tho_dis - Exy_tho_dis)/(1 - Exy_tho_dis)
+rov_tho_dis_p <- (Exx_tho_dis_p - Exy_tho_dis_p)/(1 - Exy_tho_dis_p)
 
-print(rov_tho_dis)
+print(rov_tho_dis_p)
 ```
 
 ```{r thornbill rov discrete bootstrap}
 set.seed(1)
-Pij_tho_dis <- calc_Pmatrix(tho_g, 100, 'fastgreedy', permutations = F, boot.data = thornbill)
+Pij_tho_dis_b <- calc_Pmatrix(tho_g, 100, 'fastgreedy', permutations = F, boot.data = thornbill)
 
-Exx_tho_dis <- rcomm_exx(Pij_tho_dis)
-Exy_tho_dis <- rcomm_exy(Pij_tho_dis)
+Exx_tho_dis_b <- rcomm_exx(Pij_tho_dis_b)
+Exy_tho_dis_b <- rcomm_exy(Pij_tho_dis_b)
 
-rov_tho_dis <- (Exx_tho_dis - Exy_tho_dis)/(1 - Exy_tho_dis)
+rov_tho_dis_b <- (Exx_tho_dis_b - Exy_tho_dis_b)/(1 - Exy_tho_dis_b)
 
-print(rov_tho_dis)
+print(rov_tho_dis_b)
 ```
 
-Shizuka’s coefficient: 0.40 (the value reported in their papers was 0.46)
-Ascanio’s coefficient:  (for overlapping communities with permutations)
-Ascanio’s coefficient: 0.33 (for fast greedy communities with permutations)
-Ascanio’s coefficient: 0.62 (for fast greedy communities with boostrap / must be equivalent to Shizuka's coefficient)
+ * Shizuka’s coefficient (fastgreedy, bootstrap): 0.40 (the value reported in their papers was 0.46)
+ * Ascanio’s coefficient (linkcomm, permutations): 0.97
+ * Ascanio’s coefficient (fastgreedy, permutations): 0.33
+ * Ascanio’s coefficient (fastgreedy, bootstrap): 0.62
+
+# 4. Random data
 
 ```{r random network}
 set.seed(1)
@@ -238,3 +239,36 @@ rov_rnd_over <- (Exx_rnd_over - Exy_rnd_over)/(1 - Exy_rnd_over)
 print(rov_rnd_over)
 ```
 
+```{r random shizuka rcom}
+set.seed(1)
+rcom_rnd <- calc_rc(get.adjacency(rnd_g), plot.result = FALSE)
+print(rcom_rnd)
+```
+
+```{r random linkcomm with permutations}
+set.seed(1)
+Pij_rnd_dis_p <- calc_Pmatrix(rnd_g, 100, 'fastgreedy')
+
+Exx_rnd_dis_p <- rcomm_exx(Pij_rnd_dis_p)
+Exy_rnd_dis_p <- rcomm_exy(Pij_rnd_dis_p)
+
+rov_rnd_dis_p <- (Exx_rnd_dis_p - Exy_rnd_dis_p)/(1 - Exy_rnd_dis_p)
+print(rov_rnd_dis_p)
+```
+
+```{r random linkcomm with bootstrap}
+set.seed(1)
+Pij_rnd_dis_b <- calc_bmatrix( , 100, 'fastgreedy', permutations = F,
+                              boot.data = )
+
+Exx_rnd_dis_b <- rcomm_exx(Pij_rnd_dis_b)
+Exy_rnd_dis_b <- rcomm_exy(Pij_rnd_dis_b)
+
+rov_rnd_dis_b <- (Exx_rnd_dis_b - Exy_rnd_dis_b)/(1 - Exy_rnd_dis_b)
+print(rov_rnd_dis_b)
+```
+
+ * Shizuka’s coefficient (fastgreedy, bootstrap): 
+ * Ascanio’s coefficient (linkcomm, permutations): 1
+ * Ascanio’s coefficient (fastgreedy, bootstrap):
+ * Ascanio’s coefficient (fastgreedy, permutations):
