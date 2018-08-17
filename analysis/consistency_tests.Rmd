@@ -107,7 +107,7 @@ print(rov_spa)
 #2. Tit data
 
 ```{r tits graph}
-colnames(tit) <- paste("N", as.character(V(tit_g)), sep = "")
+colnames(tit) <- paste("N", as.character(seq(1:ncol(tit))), sep = "")
 
 tit_g <- tit %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
