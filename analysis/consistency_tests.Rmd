@@ -1,6 +1,6 @@
 ---
 title: "Consistency tests"
-author: "LMM"
+author: "AA", "LMM", "JC"
 date: "17 de julio de 2018"
 output: html_document
 editor_options:
@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r libraries}
+```{r libraries, scripts, and data}
 library(tidyverse)
 library(asnipe)
 library(igraph)
@@ -25,6 +25,9 @@ source('R/xy_subsets.r')
 source('R/adj_to_edgelist.r')
 source('R/rcom.R')
 data('group_by_individual')
+data(karate)
+data(yeast)
+data(USairports)
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
@@ -36,9 +39,15 @@ sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.6392
 tit <- gbi
 
 thornbill <- read.csv('data/mmc1.csv')
+
+data(karate)
+
+data(yeast)
+
+data(USairports)
 ```
 
-#1. Sparrow data
+#1. Sparrow data (Medium structure)
 
 ```{r sparrow data}
 sparrow_inds <- sparrow %>%
@@ -56,6 +65,41 @@ sparrow_g <- sparrow_inds %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
+
+
+#2. Tit data (High structure)
+
+```{r tits graph}
+colnames(tit) <- paste("N", as.character(seq(1:ncol(tit))), sep = "")
+
+tit_g <- tit %>%
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+
+#V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
+```
+
+# 3. Thornbill data (low structure)
+
+```{r thornbill graph}
+tho_g <- thornbill %>%
+    select(-1) %>%
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
+
+```{r random graph}
+set.seed(1)
+
+rnd_data <- matrix(rbinom(10000, 1, 0.5), ncol=50) %>%
+    data.frame()
+
+rnd_g <- rnd_data %>%
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
+
+
 
 Now we can compare the consistency of the proposed metric
 
@@ -104,7 +148,7 @@ print(rov_spa)
  * Ascanio’s coefficient (linkcomm, permutations): 0.57
  * Ascanio’s coefficient (fastgreedy, permutations): 0.36
 
-#2. Tit data
+#2. Tit data (High structure)
 
 ```{r tits graph}
 colnames(tit) <- paste("N", as.character(seq(1:ncol(tit))), sep = "")
@@ -164,7 +208,7 @@ print(rov_tit_dis_b)
  * Ascanio’s coefficient (linkcomm, permutations): 0.47
  * Ascanio’s coefficient (fastgreedy, permutations): 0.33
 
-# 3. Thornbill data
+# 3. Thornbill data (low structure)
 
 ```{r thornbill graph}
 tho_g <- thornbill %>%
@@ -230,7 +274,7 @@ set.seed(1)
 rnd_data <- matrix(rbinom(10000, 1, 0.5), ncol=50) %>%
     data.frame()
 
-rnd_g <- rnd_data %>% 
+rnd_g <- rnd_data %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
