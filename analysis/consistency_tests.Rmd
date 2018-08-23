@@ -1,6 +1,6 @@
 ---
 title: "Consistency tests"
-author: "AA", "LMM", "JC"
+author: 'AA', 'LMM', 'JC', 'AC'
 date: "17 de julio de 2018"
 output: html_document
 editor_options:
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(asnipe)
 library(igraph)
+library(igraphdata)
 library(linkcomm)
 source('R/cmbDFrame.R')
 source('R/exx_calculation.R')
@@ -24,32 +25,16 @@ source('R/getNetworkCommunities.r')
 source('R/xy_subsets.r')
 source('R/adj_to_edgelist.r')
 source('R/rcom.R')
-data('group_by_individual')
-data(karate)
-data(yeast)
-data(USairports)
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
 
-```{r original datasets}
-sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''),
-                    colClasses = c(rep('factor', 3), rep('character', 10)))
-
-tit <- gbi
-
-thornbill <- read.csv('data/mmc1.csv')
-
-data(karate)
-
-data(yeast)
-
-data(USairports)
-```
-
 #1. Sparrow data (Medium structure)
 
 ```{r sparrow data}
+sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''),
+                    colClasses = c(rep('factor', 3), rep('character', 10)))
+
 sparrow_inds <- sparrow %>%
     select(-c(1:3)) %>%
     t() %>%
@@ -70,6 +55,10 @@ sparrow_g <- sparrow_inds %>%
 #2. Tit data (High structure)
 
 ```{r tits graph}
+data('group_by_individual')
+
+tit <- gbi
+
 colnames(tit) <- paste("N", as.character(seq(1:ncol(tit))), sep = "")
 
 tit_g <- tit %>%
@@ -82,22 +71,83 @@ tit_g <- tit %>%
 # 3. Thornbill data (low structure)
 
 ```{r thornbill graph}
+thornbill <- read.csv('data/mmc1.csv')
+
 tho_g <- thornbill %>%
     select(-1) %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
+# 4. UK faculty dataset
+
+Nepusz T., Petroczi A., Negyessy L., Bazso F.: Fuzzy communities and the concept of bridgeness in complex networks. Physical Review E 77:016107, 2008. 
+
+```{r}
+data('UKfaculty')
+
+uk_raw <- get.edgelist(UKfaculty) %>%
+    as.data.frame() %>% 
+    mutate(weights = E(UKfaculty)$weight) %>% 
+    uncount(weights)
+
+uk_g <- UKfaculty
+```
+
+# 5. US airports dataset
+
+```{r}
+data('USairports')
+
+usair_raw <- get.edgelist(USairports) %>% 
+    as.data.frame()
+
+usair_g <- USairports
+E(usair_g)$weight <- rep(1,length(E(usair_g)))
+usair_g <- simplify(usair_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+# 6. Hospital encounter network data
+
+P. Vanhems, A. Barrat, C. Cattuto, J.-F. Pinton, N. Khanafer, C. Regis, B.-a. Kim, B. Comte, N. Voirin: Estimating potential infection transmission routes in hospital wards using wearable proximity sensors. PloS One 8(9), e73970 306 (2013). 
+
+```{r}
+data(rfid)
+
+rfid_raw <- get.edgelist(USairports) %>% 
+    as.data.frame()
+
+rfid_g <- rfid
+E(rfid_g)$weight <- rep(1,length(E(rfid_g)))
+rfid_g <- simplify(rfid_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+# 7. Enron Email Network 
+
+```{r}
+data(enron)
+
+enron_raw <- get.edgelist(enron) %>% 
+    as.data.frame()
+
+enron_g <- enron
+E(enron_g)$weight <- rep(1,length(E(enron_g)))
+enron_g <- simplify(enron_g, remove.multiple = T, edge.attr.comb = list(weight="sum", "ignore"))
+```
+
+# 8. Random data
+
 ```{r random graph}
 set.seed(1)
 
-rnd_data <- matrix(rbinom(10000, 1, 0.5), ncol=50) %>%
+rnd_raw <- matrix(rbinom(10000, 1, 0.5), ncol=50) %>%
     data.frame()
 
-rnd_g <- rnd_data %>%
+rnd_g <- rnd_raw %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
+
 
 
 
@@ -328,3 +378,4 @@ print(rov_rnd_dis_b)
  * Ascanio’s coefficient (linkcomm, permutations): 1
  * Ascanio’s coefficient (fastgreedy, bootstrap): 0.55
  * Ascanio’s coefficient (fastgreedy, permutations): 0.50
+
