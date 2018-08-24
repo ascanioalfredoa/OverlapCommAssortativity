@@ -135,7 +135,42 @@ E(enron_g)$weight <- rep(1,length(E(enron_g)))
 enron_g <- simplify(enron_g, remove.multiple = T, edge.attr.comb = list(weight="sum", "ignore"))
 ```
 
-# 8. Random data
+# 8. AMLC institutions collaboration
+
+Ramírez-Ramírez, Rubén D, Montilla, Luis Miguel, Cavada-Blanco, Francoise, & Cróquer, Aldo. (2017). Identification of strengths and weaknesses of cooperative efforts within the wider Caribbean using a network approach [dataset] [Data set]. Zenodo. http://doi.org/10.5281/zenodo.437549
+
+```{r}
+amlc_inst_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv')) %>% 
+    select(3, 4) %>% 
+    filter(institution2 != '')
+
+amlc_inst_g <- amlc_inst_raw %>% 
+    graph.data.frame()
+
+E(amlc_inst_g)$weight <- 1
+E(amlc_inst_g)$weight <- rep(1,length(E(amlc_inst_g)))
+amlc_inst_g <- simplify(amlc_inst_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+# 9.AMLC coun collaboration
+
+Ramírez-Ramírez, Rubén D, Montilla, Luis Miguel, Cavada-Blanco, Francoise, & Cróquer, Aldo. (2017). Identification of strengths and weaknesses of cooperative efforts within the wider Caribbean using a network approach [dataset] [Data set]. Zenodo. http://doi.org/10.5281/zenodo.437549
+
+```{r}
+amlc_coun_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv')) %>% 
+    select(5, 6) %>% 
+    filter(country2 != '')
+
+amlc_coun_g <- amlc_coun_raw %>% 
+    graph.data.frame()
+
+E(amlc_coun_g)$weight <- 1
+E(amlc_coun_g)$weight <- rep(1,length(E(amlc_coun_g)))
+amlc_coun_g <- simplify(amlc_coun_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+
+# 10. Random data
 
 ```{r random graph}
 set.seed(1)
