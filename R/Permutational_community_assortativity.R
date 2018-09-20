@@ -37,7 +37,7 @@ networkPerm <- function(data) {
 #Function to calculate r_c, with default number of permutations = 100, and default option to plot result. Plot will be saved as pdf file in R output folder as "rc_result.pdf".
 
 calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm",
-                         permutations = TRUE, boot.data = NULL){
+                         permutations = TRUE, boot.data = NULL, gbi.format = TRUE){
   
     if(permutations == FALSE & is.null(boot.data)) {
         stop("To run the bootstrap algorithm, remember to fill the 'boot.data' parameter with the original observation matrix from which the network comes")

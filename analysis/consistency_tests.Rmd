@@ -24,7 +24,7 @@ source('R/Permutational_community_assortativity.r')
 source('R/getNetworkCommunities.r')
 source('R/xy_subsets.r')
 source('R/adj_to_edgelist.r')
-source('R/rcom.R')
+source('R/rcom_edgeANDgbi.R')
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
