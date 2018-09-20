@@ -63,10 +63,20 @@ calc_Pmatrix <- function(data, n.permutations=100, algorithm = "linkcomm",
   for (i in 1:n.permutations) {
     # This step bootrstraps the sampling periods
     if(permutations == FALSE)   {
-        gbi.boot <- boot.data[sample(1:nrow(boot.data),nrow(boot.data),replace=TRUE),]
-        network.perm <- get_network(gbi.boot,data_format="GBI", association_index="SRI")
-        network.perm <- adj_to_edgelist(network.perm)
-        network.perm <- network.perm[network.perm$V3 != 0, ]
+        if(permutations == FALSE)   {
+            if(gbi.format) {
+                gbi.boot <- boot.data[sample(1:nrow(boot.data),nrow(boot.data),replace=TRUE),]
+                network.perm <- get_network(gbi.boot,data_format="GBI", association_index="SRI")
+                network.perm <- adj_to_edgelist(network.perm)
+                network.perm <- network.perm[network.perm$V3 != 0, ]
+            } else {
+                network.perm <- boot.data[sample(1:nrow(boot.data),nrow(boot.data),replace=TRUE),]
+                network.perm$V3 <- 1
+                names(network.perm) <- c("V1", "V2", "V3")
+                network.perm <- aggregate(V3 ~ V1 + V2, data = network.perm, FUN = sum)
+                
+            }
+        }
     } else {
         network.perm <- networkPerm(data)
     }
