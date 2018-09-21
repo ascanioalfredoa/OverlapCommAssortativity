@@ -86,12 +86,13 @@ Nepusz T., Petroczi A., Negyessy L., Bazso F.: Fuzzy communities and the concept
 ```{r}
 data('UKfaculty')
 
-uk_g <- UKfaculty %>% 
+uk_g <- UKfaculty %>%
+    set.vertex.attribute("name", value = paste("N", 1:81, sep = "")) %>%
     as.undirected(mode = c("collapse"), 
                   edge.attr.comb = igraph_opt("edge.attr.comb"))
 
 uk_raw <- get.edgelist(uk_g) %>%
-    as.data.frame() %>% 
+    data.frame(stringsAsFactors = F) %>% 
     mutate(weights = E(uk_g)$weight) %>% 
     uncount(weights)
 ```
@@ -111,7 +112,7 @@ usair_g <- simplify(usair_g, remove.multiple = T,
                     edge.attr.comb = list(weight = "sum", "ignore"))
 
 usair_raw <- get.edgelist(usair_g) %>% 
-    as.data.frame() %>% 
+    data.frame(stringsAsFactors = F) %>% 
     mutate(weights = E(usair_g)$weight) %>% 
     uncount(weights)
 ```
@@ -124,6 +125,7 @@ P. Vanhems, A. Barrat, C. Cattuto, J.-F. Pinton, N. Khanafer, C. Regis, B.-a. Ki
 data(rfid)
 
 rfid_g <- rfid %>% 
+    set.vertex.attribute("name", value = paste("N", 1:75, sep = "")) %>%
     as.undirected(mode = c("each"), 
                   edge.attr.comb = igraph_opt("edge.attr.comb"))
 
@@ -133,7 +135,7 @@ rfid_g <- simplify(rfid_g, remove.multiple = T,
                    edge.attr.comb = list(weight = "sum", "ignore"))
 
 rfid_raw <- get.edgelist(rfid_g) %>% 
-    as.data.frame() %>% 
+    data.frame(stringsAsFactors = F) %>% 
     mutate(weights = E(rfid_g)$weight) %>% 
     uncount(weights)
 ```
@@ -144,6 +146,7 @@ rfid_raw <- get.edgelist(rfid_g) %>%
 data(enron)
 
 enron_g <- enron %>% 
+    set.vertex.attribute("name", value = paste("N", 1:184, sep = "")) %>%
     as.undirected(mode = c("each"), 
                   edge.attr.comb = igraph_opt("edge.attr.comb"))
 
@@ -153,7 +156,7 @@ enron_g <- simplify(enron_g, remove.multiple = T,
                     edge.attr.comb = list(weight="sum", "ignore"))
 
 enron_raw <- get.edgelist(enron_g) %>% 
-    as.data.frame() %>% 
+    data.frame(stringsAsFactors = F) %>% 
     mutate(weights = E(enron_g)$weight) %>% 
     uncount(weights)
 ```
@@ -163,7 +166,7 @@ enron_raw <- get.edgelist(enron_g) %>%
 Ramírez-Ramírez, Rubén D, Montilla, Luis Miguel, Cavada-Blanco, Francoise, & Cróquer, Aldo. (2017). Identification of strengths and weaknesses of cooperative efforts within the wider Caribbean using a network approach [dataset] [Data set]. Zenodo. http://doi.org/10.5281/zenodo.437549
 
 ```{r}
-amlc_inst_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv')) %>% 
+amlc_inst_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv'), stringsAsFactors = F) %>% 
     select(3, 4) %>% 
     filter(institution2 != '')
 
@@ -182,9 +185,11 @@ amlc_inst_g <- simplify(amlc_inst_g, remove.multiple = T, edge.attr.comb = 'sum'
 Ramírez-Ramírez, Rubén D, Montilla, Luis Miguel, Cavada-Blanco, Francoise, & Cróquer, Aldo. (2017). Identification of strengths and weaknesses of cooperative efforts within the wider Caribbean using a network approach [dataset] [Data set]. Zenodo. http://doi.org/10.5281/zenodo.437549
 
 ```{r}
-amlc_coun_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv')) %>% 
+amlc_coun_raw <- read.csv(url('https://zenodo.org/record/437549/files/amlc_collaboration_network.csv'), stringsAsFactors = F) %>% 
     select(5, 6) %>% 
     filter(country2 != '')
+
+amlc_coun_raw[amlc_coun_raw == ""] <- "Unknown"
 
 amlc_coun_g <- amlc_coun_raw %>% 
     graph.data.frame(directed = FALSE)
