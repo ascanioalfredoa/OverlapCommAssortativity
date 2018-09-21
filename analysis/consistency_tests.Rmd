@@ -310,7 +310,7 @@ print(rov_tit_dis)
 ```{r tits rov discrete using bootstrap}
 set.seed(1)
 
-Pij_tit_dis_b <- calc_Pmatrix(tit_g, 100, 'fastgreedy', permutations = F, boot.data = tit)
+Pij_tit_dis_b <- calc_Pmatrix(tit_g, 100, 'fastgreedy', permutations = F, boot.data = tit_raw)
 
 Exx_tit_dis_b <- rcomm_exx(Pij_tit_dis_b)
 Exy_tit_dis_b <- rcomm_exy(Pij_tit_dis_b)
