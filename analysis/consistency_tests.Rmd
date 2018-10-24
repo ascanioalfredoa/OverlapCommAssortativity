@@ -172,9 +172,24 @@ This data comes from the file 248_2018_1255_MOESM1_ESM.xlsx available as
 supplementary file
 
 ```{r}
-zootu_raw <- read.csv('data/symbio_otu.csv') %>% 
+otu_raw <- read.csv('data/symbio_otu.csv') %>% 
     select(-c(257:262)) %>% 
-    frame2
+    rename(bacteria_otu = Bacteria.OTUs.Symbiodinium.types) %>% 
+    gather(key = 'zoox', value = 'occurrence', -bacteria_otu) %>% 
+    filter(occurrence != 0) %>% 
+    uncount(occurrence)
+
+otu_g <- otu_raw %>% 
+    graph.data.frame(directed = FALSE)
+
+E(otu_g)$weight <- rep(1,length(E(otu_g)))
+
+otu_g <- simplify(otu_g, remove.multiple = T, 
+                    edge.attr.comb = list(weight="sum", "ignore"))
+
+V(otu_g)$type <- V(otu_g)$name %in% otu_raw[,1]
+
+otu_g <- bipartite.projection(otu_g, which = 'false')
 ```
 
 
