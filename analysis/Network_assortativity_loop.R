@@ -41,3 +41,5 @@ for(i in 1:nrow(loaded_networks)) {
     Results$Ascanio_perm[i] <- (Exx_p - Exy_p)/(1 - Exy_p)
     
 }
+
+write.csv(Results, 'results.csv', row.names = FALSE)
