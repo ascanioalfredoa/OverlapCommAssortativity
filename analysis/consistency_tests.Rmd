@@ -16,8 +16,7 @@ library(tidyverse)
 library(asnipe)
 library(igraph)
 library(igraphdata)
-#library(bipartite)
-library(linkcomm)
+library(magrittr)
 source('R/cmbDFrame.R')
 source('R/exx_calculation.R')
 source('R/exy_calculation.r')
@@ -231,6 +230,27 @@ E(ingre_g)$weight <- 1
 E(ingre_g)$weight <- rep(1,length(E(ingre_g)))
 
 ingre_g <- simplify(ingre_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+# 11. Karate data
+
+```{r}
+karate_raw <-  data(karate) %>% 
+    cbind(get.edgelist(karate), E(karate)$weight) %>% 
+    data.frame() %>% 
+    select(-1) %>% 
+    mutate(V4 = as.character(V4)) %>% 
+    mutate(V4 = as.numeric(V4))
+
+karate_g <- data(karate)
+```
+
+# 12. Cayman Island coral reef trophic network 
+
+```{r}
+cayman_raw <- read.delim(url('https://datadryad.org/bitstream/handle/10255/dryad.43421/857470.item.5.dat?sequence=1'), header = F, sep = ' ') %>% 
+    mutate(V1 = seq(1:265)) %>% 
+    set_colnames(c('', seq(1:265)))
 ```
 
 
