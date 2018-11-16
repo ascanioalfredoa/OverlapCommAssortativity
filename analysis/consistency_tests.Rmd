@@ -374,3 +374,10 @@ rnd_g <- rnd_raw %>%
 ```
 
 
+
+```{r metrics comparison}
+metrics <- read.csv('algorithms_results.csv')
+
+ggpairs(metrics[,-1])
+```
+
