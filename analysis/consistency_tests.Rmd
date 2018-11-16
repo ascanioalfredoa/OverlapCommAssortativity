@@ -344,9 +344,18 @@ E(alaska_g)$weight <- rep(1,length(E(alaska_g)))
 alaska_g <- simplify(alaska_g, remove.multiple = T, edge.attr.comb = 'sum')
 ```
 
-#18 
+#18 game of thrones network
+
+A. Beveridge and J. Shan, "Network of Thrones," Math Horizons Magazine , Vol. 23, No. 4 (2016), pp. 18-22.
 
 ```{r}
+got_raw <- read.csv('data/stormofswords.csv') %>% 
+    uncount(Weight)
+
+got_g <- read.csv('data/stormofswords.csv') %>% 
+    graph.data.frame(directed = FALSE) 
+   
+E(got_g)$Weight <- E(got_g)$Weight
 
 ```
 
