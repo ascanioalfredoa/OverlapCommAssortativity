@@ -17,6 +17,8 @@ library(asnipe)
 library(igraph)
 library(igraphdata)
 library(magrittr)
+library(geomnet)
+library(readxl)
 source('R/cmbDFrame.R')
 source('R/exx_calculation.R')
 source('R/exy_calculation.R')
@@ -43,9 +45,8 @@ sparrow_raw <- sparrow %>%
     filter(ID != 'NA') %>%
     select(ID, Group) %>%
     get_group_by_individual(data_format = 'individuals')
-```
 
-```{r sparrow graph}
+
 sparrow_g <- sparrow_raw %>%
     get_network(data_format = "GBI", association_index ="SRI") %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
@@ -240,21 +241,117 @@ karate_raw <-  data(karate) %>%
     data.frame() %>% 
     select(-1) %>% 
     mutate(V4 = as.character(V4)) %>% 
-    mutate(V4 = as.numeric(V4))
+    mutate(V4 = as.numeric(V4)) %>% 
+    uncount(V4)
 
 karate_g <- data(karate)
 ```
 
-# 12. Cayman Island coral reef trophic network 
+# 12. Reptile co-presence
+
+Kay GM, Tulloch A, Barton PS, Cunningham SA, Driscoll DA, Lindenmayer DB (2017) Species co-occurrence networks show reptile community reorganization under agricultural transformation. Ecography 41(1): 113-125. https://doi.org/10.1111/ecog.03079
+
+Kay GM, Tulloch A, Barton PS, Cunningham SA, Driscoll DA, Lindenmayer DB (2017) Data from: Species co-occurrence networks show reptile community reorganization under agricultural transformation. Dryad Digital Repository. https://doi.org/10.5061/dryad.3j7f6
 
 ```{r}
-cayman_raw <- read.delim(url('https://datadryad.org/bitstream/handle/10255/dryad.43421/857470.item.5.dat?sequence=1'), header = F, sep = ' ') %>% 
-    mutate(V1 = seq(1:265)) %>% 
-    set_colnames(c('', seq(1:265)))
+reptile_raw <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.151384/Dryad_data.csv?sequence=1')) %>% 
+    select(-c(1:10)) %>%
+    slice(-c(1121:1124)) %>% 
+    mutate_all(as.character) %>% 
+    mutate_all(as.numeric)
+
+reptile_raw[reptile_raw > 1] <- 1    
+
+reptile_g <- reptile_raw %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
+
+# 13. Les miserables networks
+
+```{r}
+lesmis_raw <- lesmis$edges %>% 
+    data.frame() %>% 
+    uncount(degree)
+
+lesmis_g <- lesmis$edges %>% 
+    graph.data.frame(directed = FALSE)
+
+E(lesmis_g)$weight <- E(lesmis_g)$degree
+```
+
+# 14. Bike sharing network 
+
+```{r}
+bikes_raw <- bikes$trips %>% 
+    select(-4) %>% 
+    uncount(n)
+
+bikes_g <- bikes$trips %>% 
+    graph.data.frame(directed = FALSE) %>% 
+    simplify(remove.multiple = TRUE, edge.attr.comb = 'sum')
+
+E(bikes_g)$weight <- E(bikes_g)$n
+```
+
+#15.  River metacommunities 1
+
+Henriques-Silva R, Logez M, Reynaud N, Tedesco PA, Brosse S, Januchowski-Hartley SR, Oberdorff T, Argillier C (2018) A comprehensive examination of the network position hypothesis across multiple river metacommunities. Ecography, online in advance of print. https://doi.org/10.1111/ecog.03908
+
+
+Henriques-Silva R, Logez M, Reynaud N, Tedesco PA, Brosse S, Januchowski-Hartley SR, Oberdorff T, Argillier C (2018) Data from: A comprehensive examination of the network position hypothesis across multiple river metacommunities. Dryad Digital Repository. https://doi.org/10.5061/dryad.bp31rm7
+
+```{r}
+headwater_raw <- read.delim('data/headwater.txt') %>% 
+    select(-c(1:3))
+
+
+headwater_raw[headwater_raw > 1] <- 1    
+
+headwater_g <- headwater_raw %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
+ 
+#16.  River metacommunities 2
+
+```{r}
+downwater_raw <- read.delim('data/downwater.txt') %>% 
+    select(-c(1:3))
+
+
+downwater_raw[downwater_raw > 1] <- 1    
+
+downwater_g <- downwater_raw %>% 
+    get_network(data_format = "GBI", association_index ="SRI") %>%
+    graph.adjacency(mode = "undirected", weighted = TRUE)
+```
+
+# 17. Alaskan Food web 
+
+Wood SA, Russell R, Hanson D, Williams RJ, Dunne JA (2015) Effects of spatial scale of sampling on food web structure. Ecology and Evolution 5(17): 3769–3782.
+
+```{r}
+alaska_raw <- read.csv(url('https://ndownloader.figshare.com/files/6588459')) %>% 
+    select(-c(1:5))
+
+alaska_g <- alaska_raw %>% 
+    graph.data.frame(directed = FALSE)
+
+
+E(alaska_g)$weight <- rep(1,length(E(alaska_g)))
+
+alaska_g <- simplify(alaska_g, remove.multiple = T, edge.attr.comb = 'sum')
+```
+
+#18 
+
+```{r}
+
 ```
 
 
-# 11. Random data
+# 19. Random data
 
 ```{r random graph}
 set.seed(1)
