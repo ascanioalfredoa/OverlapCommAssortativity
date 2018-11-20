@@ -242,9 +242,12 @@ karate_raw <-  data(karate) %>%
     select(-1) %>% 
     mutate(V4 = as.character(V4)) %>% 
     mutate(V4 = as.numeric(V4)) %>% 
-    uncount(V4)
+    uncount(V4) %>% 
+    rename(V1 = V2, V2 = V3)
 
-karate_g <- data(karate)
+data(karate)
+
+karate_g <- karate
 ```
 
 # 12. Reptile co-presence
@@ -258,7 +261,7 @@ reptile_raw <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.
     select(-c(1:10)) %>%
     slice(-c(1121:1124)) %>% 
     mutate_all(as.character) %>% 
-    mutate_all(as.numeric)
+    mutate_all(as.numeric) 
 
 reptile_raw[reptile_raw > 1] <- 1    
 
@@ -355,7 +358,7 @@ got_raw <- read.csv('data/stormofswords.csv') %>%
 got_g <- read.csv('data/stormofswords.csv') %>% 
     graph.data.frame(directed = FALSE) 
    
-E(got_g)$Weight <- E(got_g)$Weight
+E(got_g)$weight <- E(got_g)$Weight
 
 ```
 
