@@ -20,6 +20,7 @@ library(magrittr)
 library(geomnet)
 library(GGally)
 library(readxl)
+library(httr)
 source('R/cmbDFrame.R')
 source('R/exx_calculation.R')
 source('R/exy_calculation.R')
@@ -28,6 +29,7 @@ source('R/getNetworkCommunities.R')
 source('R/xy_subsets.R')
 source('R/adj_to_edgelist.R')
 source('R/rcom_edgeANDgbi.R')
+source('R/readxl_online.R')
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
@@ -99,24 +101,23 @@ uk_raw <- get.edgelist(uk_g) %>%
     uncount(weights)
 ```
 
-# 5. Innovations in scholarly communication dataset
+# 5. Pomatostomus dataset
 
-Bosman, J., & Kramer, B. (2016). Innovations in scholarly communication - data of the global 2015-2016 survey [Data set]. Zenodo. http://doi.org/10.5281/zenodo.49583
-
-We omitted the columns with multiple options.
+Rollins LA, Browning LE, Holleley CE, Savage JL, Russell AF, Griffith SC (2012) Building genetic networks using relatedness information: a novel approach for the estimation of dispersal and characterization of group structure in social animals. Molecular Ecology 21(7): 1727-1740. https://doi.org/10.1111/j.1365-294X.2012.05492.x
 
 ```{r}
-innov_raw <- read.csv(url('https://zenodo.org/record/49583/files/cleaned-data-innovations-in-scholarly-communication-survey_def.csv'), sep = ';', na.strings = '', colClasses = 'character') %>% 
-    select(13:174) %>% 
-    select_if(!grepl('SPECCL', colnames(.))) %>% 
-    replace(., is.na(.), 0) %>% 
-    replace(., .!=0., 1) %>% 
-    mutate_all(funs(as.numeric(.)))
-                  
-innov_g <- innov_raw %>% 
-    get_network(data_format = "GBI", 
-	association_index = "SRI") %>% 
-    graph.adjacency(mode = "undirected", weighted = TRUE)
+pomatostomus_raw <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.37072/network%20genotype%20file.csv')) %>% 
+    select(-c(1:3)) %>% 
+    cmbDFrame() %>% 
+    use_series(mrgCCombs) %>% 
+    data.frame() %>% 
+    mutate(X1 = as.character(X1), X2 = as.character(X2))
+
+pomatostomus_g <- pomatostomus_raw %>% 
+    as.matrix() %>% 
+    graph_from_edgelist(directed = FALSE) %>% 
+    simplify(remove.multiple = T, 
+                    edge.attr.comb = list(weight="sum", "ignore"))
 ```
 
 
@@ -360,11 +361,58 @@ got_g <- read.csv('data/stormofswords.csv') %>%
     graph.data.frame(directed = FALSE) 
    
 E(got_g)$weight <- E(got_g)$Weight
-
 ```
 
 
-# 19. Random data
+# 19. Shipping-boating network
+
+Lacoursière-Roussel A, Bock DG, Cristescu ME, Guichard F, Girard P, Legendre P, McKindsey CW (2012) Disentangling invasion processes in a dynamic shipping-boating network. Molecular Ecology 21(17): 4227-4241. https://doi.org/10.1111/j.1365-294X.2012.05702.x
+
+Lacoursière-Roussel A, McKindsey CW, Bock DG, Cristescu ME, Guichard F, Girard P, Legendre P (2012) Data from: Disentangling invasion processes in a dynamic shipping - boating network. Dryad Digital Repository. https://doi.org/10.5061/dryad.n3v10
+
+```{r}
+ship_g <- readxl_online('https://datadryad.org/bitstream/handle/10255/dryad.39629/Boat%20connectivity%20%28updated%29.xls') %>% 
+    as.data.frame() %>% 
+    column_to_rownames('X__1') %>% 
+    mutate_all(as.numeric) %>% 
+    mutate_all(funs(replace(., which(is.na(.)), 0))) %>% 
+    as.matrix() %>% 
+    graph_from_adjacency_matrix(mode = 'undirected', weighted = TRUE) %>% 
+    delete.vertices(c('P4', 'M4', 'M21'))
+
+ship_raw <- ship_g %>% 
+    get.edgelist() %>% 
+    as.data.frame() %>% 
+    mutate(weight = E(ship_raw)$weight) %>% 
+    uncount(weight)
+```
+
+# 20. Pekania network
+
+Bertrand P, Bowman J, Dyer RJ, Manseau M, Wilson PJ (2017) Sex-specific graphs: Relating group-specific topology to demographic and landscape data. Molecular Ecology 26(15): 3898-3912. https://doi.org/10.1111/mec.14174
+
+
+Bertrand P, Bowman J, Dyer R, Manseau M, Wilson PJ (2017) Data from: Sex-specific graphs: Relating group-specific topology to demographic and landscape data. Dryad Digital Repository. https://doi.org/10.5061/dryad.167d5 
+
+```{r}
+pekania_raw <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.143703/FisherGenotypes.csv?sequence=1')) %>% 
+    select(-c(1:5)) %>% 
+    cmbDFrame() %>% 
+    use_series(mrgCCombs) %>% 
+    data.frame() %>% 
+    mutate(X1 = as.character(X1), X2 = as.character(X2))
+
+pekania_g <- pekania_raw %>% 
+    as.matrix() %>% 
+    graph_from_edgelist(directed = FALSE) %>% 
+    simplify(remove.multiple = T, 
+                    edge.attr.comb = list(weight="sum", "ignore"))
+```
+
+
+
+
+# 21. Random data
 
 ```{r random graph}
 set.seed(1)
