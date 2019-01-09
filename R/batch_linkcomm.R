@@ -1,8 +1,8 @@
-batch_linkcomm <- function(x){ #x <- '_g'
+batch_linkcomm <- function(x){ #e.g. x <- '_g'
     
-    all_networks <- list(mget(ls(pattern = x)))
+    all_networks <- mget(ls(pattern = x, pos= 1L),  envir = as.environment(1L))
     
-    all_networks[[1]][1:2] %>%
+    all_networks %>% #number of graphs objects
         map(get.edgelist) %>% 
         map(getLinkCommunities, plot = FALSE) %>% 
         map(extract2, 'numbers') %>% 
