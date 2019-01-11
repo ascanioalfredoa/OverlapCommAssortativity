@@ -11,6 +11,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+#A. packages and scripts
+
 ```{r libraries, scripts, and data}
 library(tidyverse)
 library(asnipe)
@@ -30,11 +32,12 @@ source('R/xy_subsets.R')
 source('R/adj_to_edgelist.R')
 source('R/rcom_edgeANDgbi.R')
 source('R/readxl_online.R')
+source('R/batch_linkcomm.R')
 ```
 
 The following are the data used in [Shizuka et al. (2016)](https://www.sciencedirect.com/science/article/pii/S0003347215004480?via%3Dihub)
 
-#1. Sparrow data (Medium structure)
+##1. Sparrow data (Medium structure)
 
 ```{r sparrow data}
 sparrow <- read.csv(url('https://datadryad.org/bitstream/handle/10255/dryad.63926/Flock_Season3_Dryad.csv'), na.strings = c('NA', ' ', ''),
@@ -56,7 +59,7 @@ sparrow_g <- sparrow_raw %>%
 ```
 
 
-#2. Tit data (High structure)
+##2. Tit data (High structure)
 
 ```{r tits graph}
 data('group_by_individual')
@@ -72,7 +75,7 @@ tit_g <- tit_raw %>%
 #V(tit_g)$name <- paste("N", as.character(V(tit_g)), sep = "")
 ```
 
-# 3. Thornbill data (low structure)
+## 3. Thornbill data (low structure)
 
 ```{r thornbill graph}
 thornbill_raw <- read.csv('data/mmc1.csv')
@@ -83,7 +86,7 @@ tho_g <- thornbill_raw %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
-# 4. UK faculty dataset
+## 4. UK faculty dataset
 
 Nepusz T., Petroczi A., Negyessy L., Bazso F.: Fuzzy communities and the concept of bridgeness in complex networks. Physical Review E 77:016107, 2008. 
 
@@ -101,7 +104,7 @@ uk_raw <- get.edgelist(uk_g) %>%
     uncount(weights)
 ```
 
-# 5. Pomatostomus dataset
+## 5. Pomatostomus dataset
 
 Rollins LA, Browning LE, Holleley CE, Savage JL, Russell AF, Griffith SC (2012) Building genetic networks using relatedness information: a novel approach for the estimation of dispersal and characterization of group structure in social animals. Molecular Ecology 21(7): 1727-1740. https://doi.org/10.1111/j.1365-294X.2012.05492.x
 
@@ -122,7 +125,7 @@ pomatostomus_g <- pomatostomus_raw %>%
 
 
 
-# 6. Hospital encounter network data
+## 6. Hospital encounter network data
 
 P. Vanhems, A. Barrat, C. Cattuto, J.-F. Pinton, N. Khanafer, C. Regis, B.-a. Kim, B. Comte, N. Voirin: Estimating potential infection transmission routes in hospital wards using wearable proximity sensors. PloS One 8(9), e73970 306 (2013). 
 
@@ -145,7 +148,7 @@ rfid_raw <- get.edgelist(rfid_g) %>%
     uncount(weights)
 ```
 
-# 7. Enron Email Network 
+## 7. Enron Email Network 
 
 ```{r}
 data(enron)
@@ -166,7 +169,7 @@ enron_raw <- get.edgelist(enron_g) %>%
     uncount(weights)
 ```
 
-# 8. coral symbiudinum-otu network
+## 8. coral symbiudinum-otu network
 
 Bernasconi, R., Stat, M., Koenders, A. et al. Microb Ecol (2018). https://doi.org/10.1007/s00248-018-1255-4
 
@@ -196,7 +199,7 @@ otu_g <- bipartite.projection(otu_g, which = 'false')
 ```
 
 
-# 9.AMLC countries collaboration
+## 9.AMLC countries collaboration
 
 Ramírez-Ramírez, Rubén D, Montilla, Luis Miguel, Cavada-Blanco, Francoise, & Cróquer, Aldo. (2017). Identification of strengths and weaknesses of cooperative efforts within the wider Caribbean using a network approach [dataset] [Data set]. Zenodo. http://doi.org/10.5281/zenodo.437549
 
@@ -217,26 +220,15 @@ E(amlc_coun_g)$weight <- rep(1,length(E(amlc_coun_g)))
 amlc_coun_g <- simplify(amlc_coun_g, remove.multiple = T, edge.attr.comb = 'sum')
 ```
 
-#10. Food network
+##10. Food network
 
 Ahn, Y. Y., Ahnert, S. E., Bagrow, J. P., & Barabási, A. L. (2011). Flavor network and the principles of food pairing. Scientific reports, 1, 196.
 
 ```{r}
-ingre_raw <- read.csv("data/ingredients_net.csv", 
-    header = FALSE, skip = 4) %>% 
-    uncount(V3)
 
-ingre_g <- ingre_raw %>% 
-    graph.data.frame(directed = FALSE)
-    
-E(ingre_g)$weight <- 1
-
-E(ingre_g)$weight <- rep(1,length(E(ingre_g)))
-
-ingre_g <- simplify(ingre_g, remove.multiple = T, edge.attr.comb = 'sum')
 ```
 
-# 11. Karate data
+## 11. Karate data
 
 ```{r}
 karate_raw <-  data(karate) %>% 
@@ -253,7 +245,7 @@ data(karate)
 karate_g <- karate
 ```
 
-# 12. Reptile co-presence
+## 12. Reptile co-presence
 
 Kay GM, Tulloch A, Barton PS, Cunningham SA, Driscoll DA, Lindenmayer DB (2017) Species co-occurrence networks show reptile community reorganization under agricultural transformation. Ecography 41(1): 113-125. https://doi.org/10.1111/ecog.03079
 
@@ -273,7 +265,7 @@ reptile_g <- reptile_raw %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
-# 13. Les miserables networks
+## 13. Les miserables networks
 
 ```{r}
 lesmis_raw <- lesmis$edges %>% 
@@ -286,7 +278,7 @@ lesmis_g <- lesmis$edges %>%
 E(lesmis_g)$weight <- E(lesmis_g)$degree
 ```
 
-# 14. Bike sharing network 
+## 14. Bike sharing network 
 
 ```{r}
 bikes_raw <- bikes$trips %>% 
@@ -300,7 +292,7 @@ bikes_g <- bikes$trips %>%
 E(bikes_g)$weight <- E(bikes_g)$n
 ```
 
-#15.  River metacommunities 1
+##15.  River metacommunities 1
 
 Henriques-Silva R, Logez M, Reynaud N, Tedesco PA, Brosse S, Januchowski-Hartley SR, Oberdorff T, Argillier C (2018) A comprehensive examination of the network position hypothesis across multiple river metacommunities. Ecography, online in advance of print. https://doi.org/10.1111/ecog.03908
 
@@ -319,7 +311,7 @@ headwater_g <- headwater_raw %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
  
-#16.  River metacommunities 2
+##16.  River metacommunities 2
 
 ```{r}
 downwater_raw <- read.delim('data/downwater.txt') %>% 
@@ -333,7 +325,7 @@ downwater_g <- downwater_raw %>%
     graph.adjacency(mode = "undirected", weighted = TRUE)
 ```
 
-# 17. Alaskan Food web 
+## 17. Alaskan Food web 
 
 Wood SA, Russell R, Hanson D, Williams RJ, Dunne JA (2015) Effects of spatial scale of sampling on food web structure. Ecology and Evolution 5(17): 3769–3782.
 
@@ -350,7 +342,7 @@ E(alaska_g)$weight <- rep(1,length(E(alaska_g)))
 alaska_g <- simplify(alaska_g, remove.multiple = T, edge.attr.comb = 'sum')
 ```
 
-#18 game of thrones network
+##18 game of thrones network
 
 A. Beveridge and J. Shan, "Network of Thrones," Math Horizons Magazine , Vol. 23, No. 4 (2016), pp. 18-22.
 
@@ -365,7 +357,7 @@ E(got_g)$weight <- E(got_g)$Weight
 ```
 
 
-# 19. Shipping-boating network
+## 19. Shipping-boating network
 
 Lacoursière-Roussel A, Bock DG, Cristescu ME, Guichard F, Girard P, Legendre P, McKindsey CW (2012) Disentangling invasion processes in a dynamic shipping-boating network. Molecular Ecology 21(17): 4227-4241. https://doi.org/10.1111/j.1365-294X.2012.05702.x
 
@@ -381,14 +373,16 @@ ship_g <- readxl_online('https://datadryad.org/bitstream/handle/10255/dryad.3962
     graph_from_adjacency_matrix(mode = 'undirected', weighted = TRUE) %>% 
     delete.vertices(c('P4', 'M4', 'M21'))
 
+ship_raw <- ship_g 
+
 ship_raw <- ship_g %>% 
     get.edgelist() %>% 
     as.data.frame() %>% 
-    mutate(weight = E(ship_raw)$weight) %>% 
+    mutate(weight = E(ship_g)$weight) %>% 
     uncount(weight)
 ```
 
-# 20. Pekania network
+## 20. Pekania network
 
 Bertrand P, Bowman J, Dyer RJ, Manseau M, Wilson PJ (2017) Sex-specific graphs: Relating group-specific topology to demographic and landscape data. Molecular Ecology 26(15): 3898-3912. https://doi.org/10.1111/mec.14174
 
@@ -413,7 +407,7 @@ pekania_g <- pekania_raw %>%
 
 
 
-# 21. Random data
+## 21. Random data
 
 ```{r random graph}
 set.seed(1)
@@ -427,10 +421,16 @@ rnd_g <- rnd_raw %>%
 ```
 
 
+#B. Comparison of the results
 
 ```{r metrics comparison}
 metrics <- read.csv('algorithms_results.csv')
 
 ggpairs(metrics[,-1])
+```
+
+
+```{r overlapping comms}
+over_comm <- batch_linkcomm('_g')
 ```
 

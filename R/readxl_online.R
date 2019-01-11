@@ -17,7 +17,7 @@ readxl_online <- function(url, type = NULL, ...) {
         type = ".xls"
     }
     if (tz == TRUE) {
-        httr::GET(url, httr::write_disk("tmp.zip", overwrite = TRUE))
+        httr::GET(url, write_disk("tmp.zip", overwrite = TRUE))
         tmp <- unzip("tmp.zip")
         # On osx more than one file name is returned, select first element.
         df <- readxl::read_excel(tmp[[1]])
@@ -29,5 +29,5 @@ readxl_online <- function(url, type = NULL, ...) {
     }
     df <- httr::GET(url, write_disk(paste0("tmp", type), overwrite = TRUE))
     df <- readxl::read_excel(paste0("tmp", type))
-    file.remove('tmp.xls')
+    #file.remove('tmp.xls')
 }
