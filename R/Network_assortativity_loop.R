@@ -2,8 +2,15 @@
 loaded_networks <- data.frame(matrix(ls()[grep("_g|_raw", ls())], ncol = 2, byrow = 2), 
                               stringsAsFactors = F)
 names(loaded_networks) <- c("Graph", "RawData")
-loaded_networks$gbi.format <- c(rep(FALSE, 3), TRUE, rep(FALSE, 2), rep(c(TRUE, FALSE), 2), rep(FALSE, 2), TRUE, FALSE, rep(TRUE, 4), FALSE)
+loaded_networks$gbi.format <- FALSE
 
+for(i in 1:nrow(loaded_networks)) {
+    if(ncol(eval(parse(text = loaded_networks$RawData[i]))) > 3) {
+        loaded_networks$gbi.format[i] <- TRUE
+    } else {
+        loaded_networks$gbi.format[i] <- FALSE
+    }
+}
 
 #### Results matrix ####
 
@@ -43,4 +50,4 @@ for(i in 1:nrow(loaded_networks)) {
     
 }
 
-write.csv(Results, 'results.csv', row.names = FALSE)
+#write.csv(Results, 'results.csv', row.names = FALSE)

@@ -40,10 +40,10 @@ linkcomm.exmod <- function(linkcomm.object){
     names(community)[to.merge[1,1]] <- as.character(n)
     community[[to.merge[1,2]]] <- NULL
     # calculate new similar
-    similarity_matrix <- similarity_function(community, graph)
+    similarity_matrix <- similarity_function(community, linkcomm.object$igraph)
     # move forward
-    partition.list[[length(community)]]<-community
-    n <- n+1
+    partition.list[[length(community)]] <- community
+    n <- n+1 
   }
 
   class(grouping) <- "hclust"
