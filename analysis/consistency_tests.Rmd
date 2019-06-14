@@ -453,7 +453,7 @@ ggpairs(metrics[,-c(1,5)])
 #test
 linkcomm.object <- sparrow_g %>% 
     get.edgelist() %>% 
-    getLinkCommunities(plot = FALSE) #%>% 
+    getLinkCommunities(plot = FALSE) %>% 
     linkcomm.exmod()
 #then, finish writing batch_linkcomm_exmod
 ```
