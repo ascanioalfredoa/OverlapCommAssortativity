@@ -1,5 +1,6 @@
 linkcomm.exmod <- function(linkcomm.object){
-
+    
+  require(cba)
   grouping <- list()
   grouping$merge <- data.frame(0)
   grouping$height <- 0
@@ -42,7 +43,7 @@ linkcomm.exmod <- function(linkcomm.object){
     # calculate new similar
     similarity_matrix <- similarity_function(community, linkcomm.object$igraph)
     # move forward
-    partition.list[[length(community)]] <- community
+    #partition.list[[length(community)]] <- community
     n <- n+1 
   }
 

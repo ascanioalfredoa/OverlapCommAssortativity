@@ -445,15 +445,15 @@ metrics <- read.csv('output/assortativity_results.csv') %>%
 
 
 ```{r overlapping comms}
-ggpairs(metrics[,-c(1,4)])
+ggpairs(metrics[,-c(1,5)])
 ```
 
 ```{r}
 #test
-linkcomm.object <- uk_g %>% 
+linkcomm.object <- sparrow_g %>% 
     get.edgelist() %>% 
-    getLinkCommunities(plot = FALSE) #%>% 
-    #linkcomm.exmod()
+    getLinkCommunities(plot = FALSE) %>% 
+    linkcomm.exmod()
 #then, finish writing batch_linkcomm_exmod
 ```
 
