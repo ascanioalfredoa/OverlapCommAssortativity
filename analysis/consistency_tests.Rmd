@@ -435,6 +435,24 @@ over_comm <- batch_linkcomm('_g')
 write.csv(over_comm, 'output/over_comm.csv', row.names = FALSE)
 ```
 
+
+```{r}
+#test
+Results$ExMod <- as.numeric(NA)
+for(i in 2:nrow(Results)) {
+    linkcomm.object <- eval(parse(text = paste(Results[i, 1], "_g", sep  = ""))) %>% 
+    get.edgelist() %>% 
+    getLinkCommunities(plot = FALSE)
+    
+    if(linkcomm.object$numbers[3] < 3) next()
+    
+    Results$ExMod[i] <- max(linkcomm.exmod(linkcomm.object))
+    print(i)
+}
+
+#then, finish writing batch_linkcomm_exmod
+```
+
 ```{r restore computationally demanding objects}
 over_comm <- read.csv('output/over_comm.csv')
 
@@ -444,17 +462,9 @@ metrics <- read.csv('output/assortativity_results.csv') %>%
     select(-network1)
 ```
 
+Comparacion con metricas para comunidades discretas
 
 ```{r overlapping comms}
-ggpairs(metrics[,-c(1,5)])
+ggpairs(metrics[,-c(1,5,6)])
+#ggpairs(metrics[metrics$Ascanio_perm != 0,-c(1,5,6)])
 ```
-
-```{r}
-#test
-linkcomm.object <- sparrow_g %>% 
-    get.edgelist() %>% 
-    getLinkCommunities(plot = FALSE) %>% 
-    linkcomm.exmod()
-#then, finish writing batch_linkcomm_exmod
-```
-
